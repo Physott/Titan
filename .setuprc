@@ -1,0 +1,12 @@
+#! /bin/bash
+
+####################
+#                  #
+#   Titan Script   #
+#                  #
+####################
+
+export TITAN=~/Titan
+
+export PATH=$TITAN/bin:$PATH
+export LD_LIBRARY_PATH=$TITAN/SMath/lib:$LD_LIBRARY_PATH
