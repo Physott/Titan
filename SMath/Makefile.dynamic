@@ -4,7 +4,7 @@ LDFLAGS=-shared
 INC=-I inc -I math/inc
 SOURCES=SMath.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
-LIB=libSMath.a
+LIB=libSMath.so
 
 vpath %.cpp src
 
@@ -18,12 +18,12 @@ print:
 $(LIB): $(OBJECTS) 
 	@echo
 	@echo "start generating $@"
-	ar crs lib/$@ obj/$(OBJECTS)
+	$(CC) $(LDFLAGS) $(INC) obj/$(OBJECTS) -lgmp -o lib/$@
 	@echo "$@ done"
 	@echo
 
 %.o: %.cpp
-	$(CC) $(CFLAGS) $(INC) $< -static -lgmp -o obj/$@
+	$(CC) $(CFLAGS) $(INC) -o obj/$@ $<
 
 clean:
 	rm -rf obj/*

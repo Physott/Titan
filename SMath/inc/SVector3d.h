@@ -33,9 +33,6 @@ public:
 	void	clear()	{x=0.0; y=0.0; z=0.0;}
 
 	void	print()				{printf("Vector3d: %lf   %lf   %lf\n", x, y, z);}
-	void	read(char* mem)		{memcpy(&x, mem, 8); mem+=8; memcpy(&y, mem, 8); mem+=8; memcpy(&z, mem, 8); mem+=8;}
-	void	write(char* mem)	{memcpy(mem, &x, 8); mem+=8; memcpy(mem, &y, 8); mem+=8; memcpy(mem, &z, 8); mem+=8;}
-
 
 	friend	bool	operator ==(const SVector3d& v1, const SVector3d& v2);
 	friend	bool	operator !=(const SVector3d& v1, const SVector3d& v2);
