@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-c -Wall
-LDFLAGS=-L SMath/lib
-INC=-I inc -I SMath/inc
+LDFLAGS=-L SMath/lib -L SPhysics/lib
+INC=-I inc -I SMath/inc -I SPhysics/inc
 SOURCES=Titan.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=Titan
@@ -18,7 +18,7 @@ print:
 $(EXECUTABLE): $(OBJECTS)
 	@echo
 	@echo "start generating $@"
-	$(CC) $(LDFLAGS) $(INC) obj/$(OBJECTS) -static -lgmp -lSMath -o bin/$@
+	$(CC) $(LDFLAGS) $(INC) obj/$(OBJECTS) -static -lgmp -lSMath -lSPhysics -o bin/$@
 	@echo "$@ done"
 	@echo
 
