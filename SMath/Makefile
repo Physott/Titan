@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-c -Wall -fPIC
 LDFLAGS=-shared
-INC=-I inc -I math/inc
+INC=-I inc
 SOURCES=SMath.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 LIB=libSMath.a
@@ -18,7 +18,7 @@ print:
 $(LIB): $(OBJECTS) 
 	@echo
 	@echo "start generating $@"
-	ar crs lib/$@ obj/$(OBJECTS)
+	ar crs lib/$@ $(foreach OBJECTS,$(OBJECTS),obj/$(OBJECTS))
 	@echo "$@ done"
 	@echo
 

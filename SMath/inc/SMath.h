@@ -8,9 +8,6 @@
 #include <gmp.h>
 
 
-#include "SVector3d.h"
-#include "SVector3mp.h"
-
 class	SMath;
 extern	SMath*	gMath;
 
@@ -25,6 +22,13 @@ public:
 	
 	static	void	init();
 };
+
+
+
+
+#include "SVector3d.h"
+#include "SVector3mp.h"
+
 
 
 

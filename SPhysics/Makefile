@@ -1,8 +1,8 @@
 CC=g++
 CFLAGS=-c -Wall -fPIC
-LDFLAGS=-shared
-INC=-I inc -I math/inc
-SOURCES=SPhysics.cpp
+LDFLAGS=-shared -L ../SMath/lib
+INC=-I inc -I obj -I ../SMath/inc
+SOURCES=SPhysics.cpp SPhysicalObject.cpp SPhysicalObjectManager.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 LIB=libSPhysics.a
 
@@ -18,7 +18,7 @@ print:
 $(LIB): $(OBJECTS) 
 	@echo
 	@echo "start generating $@"
-	ar crs lib/$@ obj/$(OBJECTS)
+	ar crs lib/$@ $(foreach OBJECTS,$(OBJECTS),obj/$(OBJECTS))
 	@echo "$@ done"
 	@echo
 

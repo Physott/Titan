@@ -5,6 +5,8 @@
 
 #include "SMath.h"
 
+
+
 class	SPhysics;
 extern	SPhysics*	gPhysics;
 
@@ -19,6 +21,11 @@ public:
 	
 	static	void	init();
 };
+
+
+
+#include "SPhysicalObject.h"
+#include "SPhysicalObjectManager.h"
 
 
 
