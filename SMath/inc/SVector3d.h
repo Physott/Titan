@@ -51,6 +51,7 @@ inline	SVector3d	operator *(const double v1, const SVector3d& v2);
 inline	double		operator *(const SVector3d& v1, const SVector3d& v2);
 inline	SVector3d	operator /(const SVector3d& v1, const double v2);
 inline	SVector3d	operator /(const double v1, const SVector3d& v2);
+inline	SVector3d	cross(const SVector3d& v1, const SVector3d& v2);
 
 
 
@@ -82,6 +83,7 @@ SVector3d	operator *(const SVector3d& v1, const double v2)		{SVector3d h(v1); h*
 SVector3d	operator *(const double v1, const SVector3d& v2)		{SVector3d h(v2); h*=v1; return h;}
 double		operator *(const SVector3d& v1, const SVector3d& v2)	{return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);}
 SVector3d	operator /(const SVector3d& v1, const double v2)		{SVector3d h(v1); h/=v2; return h;}
+SVector3d	cross(const SVector3d& v1, const SVector3d& v2)			{return SVector3d((v1.y * v2.z) - (v1.z * v2.y), (v1.z * v2.x) - (v1.x * v2.z), (v1.x * v2.y) - (v1.y * v2.x));}
 
 
 

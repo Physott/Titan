@@ -12,6 +12,7 @@ private:
 public:
 	SVector3mp()													{mpf_init(x); mpf_init(y); mpf_init(z);}
 	SVector3mp(const double xx, const double yy, const double zz)	{mpf_init_set_d(x, xx); mpf_init_set_d(y, yy); mpf_init_set_d(z, zz);}
+	SVector3mp(const mpf_t& xx, const mpf_t& yy, const mpf_t& zz)	{mpf_init_set(x, xx); mpf_init_set(y, yy); mpf_init_set(z, zz);}
 	SVector3mp(const SVector3d& v)									{mpf_init_set_d(x, v.x); mpf_init_set_d(y, v.y); mpf_init_set_d(z, v.z);}
 	SVector3mp(const SVector3mp& v)									{mpf_init_set(x, v.x); mpf_init_set(y, v.y); mpf_init_set(z, v.z);}
 	~SVector3mp()													{}
@@ -49,6 +50,7 @@ inline	SVector3mp	operator *(const double v1, const SVector3mp& v2);
 inline	double		operator *(const SVector3mp& v1, const SVector3mp& v2);
 inline	SVector3mp	operator /(const SVector3mp& v1, const double v2);
 inline	SVector3mp	operator /(const double v1, const SVector3mp& v2);
+inline	SVector3mp	cross(const SVector3mp& v1, const SVector3mp& v2);
 
 
 
@@ -133,6 +135,40 @@ double		operator *(const SVector3mp& v1, const SVector3mp& v2)
 	return d;
 }
 SVector3mp	operator /(const SVector3mp& v1, const double v2)		{SVector3mp h(v1); h/=v2; return h;}
+SVector3mp	cross(const SVector3mp& v1, const SVector3mp& v2)			
+{
+	mpf_t	h1;
+	mpf_init(h1);
+	mpf_mul(h1, v1.y, v2.z);
+	mpf_t	h2;
+	mpf_init(h2);
+	mpf_mul(h1, v1.z, v2.y);
+	mpf_sub(h1, h1, h2);
+	
+	mpf_t	xx;
+	mpf_init(xx, h1);
+	
+	mpf_mul(h1, v1.z, v2.x);
+	mpf_mul(h1, v1.x, v2.z);
+	mpf_sub(h1, h1, h2);
+	
+	mpf_t	yy;
+	mpf_init(yy, h1);
+	
+	mpf_mul(h1, v1.x, v2.y);
+	mpf_mul(h1, v1.y, v2.x);
+	mpf_sub(h1, h1, h2);
+	
+		
+	SVector3d	ret(xx, yy, h1);
+	
+	mpf_clear(h1);
+	mpf_clear(h2);
+	mpf_clear(xx);
+	mpf_clear(yy);
+	
+	return ret;
+}
 
 
 
