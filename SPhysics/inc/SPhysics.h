@@ -26,6 +26,7 @@ public:
 
 #include "SPhysicalObject.h"
 #include "SPhysicalObjectManager.h"
+#include "SOrbit.h"
 
 
 

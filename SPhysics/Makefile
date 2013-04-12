@@ -2,7 +2,7 @@ CC=g++
 CFLAGS=-c -Wall -fPIC
 LDFLAGS=-shared -L ../SMath/lib
 INC=-I inc -I obj -I ../SMath/inc
-SOURCES=SPhysics.cpp SPhysicalObject.cpp SPhysicalObjectManager.cpp
+SOURCES=SPhysics.cpp SPhysicalObject.cpp SPhysicalObjectManager.cpp SOrbit.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 LIB=libSPhysics.a
 
