@@ -5,7 +5,7 @@ SMath*	gMath	= 0;
 
 SMath::SMath()
 {
-	mpf_set_default_prec(128);
+	mpfr_set_default_prec(128);
 }
 
 SMath::~SMath()

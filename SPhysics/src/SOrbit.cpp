@@ -2,30 +2,33 @@
 
 
 
-SOrbit::SOrbit(const SVector3mp& Position, const SVector3mp& Velocity)	: areaVelocity()
+SOrbit::SOrbit(const SVector3mp& Position, const SVector3mp& Velocity)	: areaVelocityNorm(cross(Position, Velocity))
 {
-	mpf_init(eccentricity);
-	mpf_init(semimajorAxis);
-	mpf_init(inclination);
-	mpf_init(longitudeAscendingNode);
-	mpf_init(argumentPeriapsis);
-	mpf_init(meanAnomaly);
+	mpfr_init(eccentricity);
+	mpfr_init(semimajorAxis);
+	mpfr_init(inclination);
+	mpfr_init(longitudeAscendingNode);
+	mpfr_init(argumentPeriapsis);
+	mpfr_init(meanAnomaly);
 	
+	mpfr_init(areaVelocity);
+	areaVelocityNorm.Mag(areaVelocity);
+	areaVelocityNorm	/= areaVelocity;
 }
 
-SOrbit::SOrbit(	const mpf_t& Eccentricity, 
-				const mpf_t& SemimajorAxis, 
-				const mpf_t& Inclination, 
-				const mpf_t& LongitudeAscendingNode, 
-				const mpf_t& ArgumentPeriapsis, 
-				const mpf_t& MeanAnomaly)				: areaVelocity()
+SOrbit::SOrbit(	const mpfr_t& Eccentricity, 
+				const mpfr_t& SemimajorAxis, 
+				const mpfr_t& Inclination, 
+				const mpfr_t& LongitudeAscendingNode, 
+				const mpfr_t& ArgumentPeriapsis, 
+				const mpfr_t& MeanAnomaly)				: areaVelocityNorm()
 {
-	 mpf_init_set(eccentricity, Eccentricity);
-	 mpf_init_set(semimajorAxis, SemimajorAxis);
-	 mpf_init_set(inclination, Inclination);
-	 mpf_init_set(longitudeAscendingNode, LongitudeAscendingNode);
-	 mpf_init_set(argumentPeriapsis, ArgumentPeriapsis);
-	 mpf_init_set(meanAnomaly, MeanAnomaly);
+	 mpfr_init_set(eccentricity, Eccentricity, GMP_RNDN);
+	 mpfr_init_set(semimajorAxis, SemimajorAxis, GMP_RNDN);
+	 mpfr_init_set(inclination, Inclination, GMP_RNDN);
+	 mpfr_init_set(longitudeAscendingNode, LongitudeAscendingNode, GMP_RNDN);
+	 mpfr_init_set(argumentPeriapsis, ArgumentPeriapsis, GMP_RNDN);
+	 mpfr_init_set(meanAnomaly, MeanAnomaly, GMP_RNDN);
 	 
 	 //TO DO
 	 //areaVelocity, cross();
@@ -34,17 +37,21 @@ SOrbit::SOrbit(	const mpf_t& Eccentricity,
 
 SOrbit::~SOrbit()
 {
-	mpf_clear(eccentricity);
-	mpf_clear(semimajorAxis);
-	mpf_clear(inclination);
-	mpf_clear(longitudeAscendingNode);
-	mpf_clear(argumentPeriapsis);
-	mpf_clear(meanAnomaly);
+	mpfr_clear(eccentricity);
+	mpfr_clear(semimajorAxis);
+	mpfr_clear(inclination);
+	mpfr_clear(longitudeAscendingNode);
+	mpfr_clear(argumentPeriapsis);
+	mpfr_clear(meanAnomaly);
+	
+	mpfr_clear(areaVelocity);
 }
 
 
 
 void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity)
 {
-	areaVelocity	= cross(Position, Velocity);
+	areaVelocityNorm	= cross(Position, Velocity);
+	areaVelocityNorm.Mag(areaVelocity);
+	areaVelocityNorm	/= areaVelocity;
 }

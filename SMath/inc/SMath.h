@@ -5,7 +5,7 @@
 #include <string.h>
 #include <math.h>
 
-#include <gmp.h>
+#include <mpfr.h>
 
 
 class	SMath;

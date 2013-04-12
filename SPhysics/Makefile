@@ -23,7 +23,7 @@ $(LIB): $(OBJECTS)
 	@echo
 
 %.o: %.cpp
-	$(CC) $(CFLAGS) $(INC) $< -static -lgmp -o obj/$@
+	$(CC) $(CFLAGS) $(INC) $< -static -lmpfr -lgmp -o obj/$@
 
 clean:
 	rm -rf obj/*

@@ -5,37 +5,39 @@
 class	SVector3mp
 {
 private:
-	mpf_t	x;
-	mpf_t	y;
-	mpf_t	z;
+	mpfr_t	x;
+	mpfr_t	y;
+	mpfr_t	z;
 
 public:
-	SVector3mp()													{mpf_init(x); mpf_init(y); mpf_init(z);}
-	SVector3mp(const double xx, const double yy, const double zz)	{mpf_init_set_d(x, xx); mpf_init_set_d(y, yy); mpf_init_set_d(z, zz);}
-	SVector3mp(const mpf_t& xx, const mpf_t& yy, const mpf_t& zz)	{mpf_init_set(x, xx); mpf_init_set(y, yy); mpf_init_set(z, zz);}
-	SVector3mp(const SVector3d& v)									{mpf_init_set_d(x, v.x); mpf_init_set_d(y, v.y); mpf_init_set_d(z, v.z);}
-	SVector3mp(const SVector3mp& v)									{mpf_init_set(x, v.x); mpf_init_set(y, v.y); mpf_init_set(z, v.z);}
-	~SVector3mp()													{}
+	SVector3mp()														{mpfr_init(x); mpfr_init(y); mpfr_init(z);}
+	SVector3mp(const double xx, const double yy, const double zz)		{mpfr_init_set_d(x, xx, GMP_RNDN); mpfr_init_set_d(y, yy, GMP_RNDN); mpfr_init_set_d(z, zz, GMP_RNDN);}
+	SVector3mp(const mpfr_t& xx, const mpfr_t& yy, const mpfr_t& zz)	{mpfr_init_set(x, xx, GMP_RNDN); mpfr_init_set(y, yy, GMP_RNDN); mpfr_init_set(z, zz, GMP_RNDN);}
+	SVector3mp(const SVector3d& v)										{mpfr_init_set_d(x, v.x, GMP_RNDN); mpfr_init_set_d(y, v.y, GMP_RNDN); mpfr_init_set_d(z, v.z, GMP_RNDN);}
+	SVector3mp(const SVector3mp& v)										{mpfr_init_set(x, v.x, GMP_RNDN); mpfr_init_set(y, v.y, GMP_RNDN); mpfr_init_set(z, v.z, GMP_RNDN);}
+	~SVector3mp()														{}
 	
 	
-	SVector3mp&	operator =(const SVector3mp& v)		{mpf_init_set(x, v.x); mpf_init_set(y, v.y); mpf_init_set(z, v.z); return *this;}
-	SVector3mp&	operator +=(const SVector3mp& v)	{mpf_add(x, x, v.x); mpf_add(y, y, v.y); mpf_add(z, z, v.z); return *this;}
-	SVector3mp&	operator +=(const mpf_t& v)			{mpf_add(x, x, v); mpf_add(y, y, v); mpf_add(z, z, v); return *this;}
-	SVector3mp&	operator +=(const double v)			{mpf_t	t; mpf_init_set_d(t, v); mpf_add(x, x, t); mpf_add(y, y, t); mpf_add(z, z, t); return *this;}
-	SVector3mp&	operator -=(const SVector3mp& v)	{mpf_sub(x, x, v.x); mpf_sub(y, y, v.y); mpf_sub(z, z, v.z); return *this;}
-	SVector3mp&	operator -=(const mpf_t& v)			{mpf_sub(x, x, v); mpf_sub(y, y, v); mpf_sub(z, z, v); return *this;}
-	SVector3mp&	operator -=(const double v)			{mpf_t	t; mpf_init_set_d(t, v); mpf_sub(x, x, t); mpf_sub(y, y, t); mpf_sub(z, z, t); return *this;}
-	SVector3mp&	operator *=(const mpf_t& v)			{mpf_mul(x, x, v); mpf_mul(y, y, v); mpf_mul(z, z, v); return *this;}
-	SVector3mp&	operator *=(const double v)			{mpf_t	t; mpf_init_set_d(t, v); mpf_mul(x, x, t); mpf_mul(y, y, t); mpf_mul(z, z, t); return *this;}
-	SVector3mp&	operator /=(const mpf_t& v)			{mpf_div(x, x, v); mpf_div(y, y, v); mpf_div(z, z, v); return *this;}
+	SVector3mp&	operator =(const SVector3mp& v)		{mpfr_init_set(x, v.x, GMP_RNDN); mpfr_init_set(y, v.y, GMP_RNDN); mpfr_init_set(z, v.z, GMP_RNDN); return *this;}
+	SVector3mp&	operator +=(const SVector3mp& v)	{mpfr_add(x, x, v.x, GMP_RNDN); mpfr_add(y, y, v.y, GMP_RNDN); mpfr_add(z, z, v.z, GMP_RNDN); return *this;}
+	SVector3mp&	operator +=(const mpfr_t& v)		{mpfr_add(x, x, v, GMP_RNDN); mpfr_add(y, y, v, GMP_RNDN); mpfr_add(z, z, v, GMP_RNDN); return *this;}
+	SVector3mp&	operator +=(const double v)			{mpfr_t	t; mpfr_init_set_d(t, v, GMP_RNDN); mpfr_add(x, x, t, GMP_RNDN); mpfr_add(y, y, t, GMP_RNDN); mpfr_add(z, z, t, GMP_RNDN); return *this;}
+	SVector3mp&	operator -=(const SVector3mp& v)	{mpfr_sub(x, x, v.x, GMP_RNDN); mpfr_sub(y, y, v.y, GMP_RNDN); mpfr_sub(z, z, v.z, GMP_RNDN); return *this;}
+	SVector3mp&	operator -=(const mpfr_t& v)		{mpfr_sub(x, x, v, GMP_RNDN); mpfr_sub(y, y, v, GMP_RNDN); mpfr_sub(z, z, v, GMP_RNDN); return *this;}
+	SVector3mp&	operator -=(const double v)			{mpfr_t	t; mpfr_init_set_d(t, v, GMP_RNDN); mpfr_sub(x, x, t, GMP_RNDN); mpfr_sub(y, y, t, GMP_RNDN); mpfr_sub(z, z, t, GMP_RNDN); return *this;}
+	SVector3mp&	operator *=(const mpfr_t& v)		{mpfr_mul(x, x, v, GMP_RNDN); mpfr_mul(y, y, v, GMP_RNDN); mpfr_mul(z, z, v, GMP_RNDN); return *this;}
+	SVector3mp&	operator *=(const double v)			{mpfr_t	t; mpfr_init_set_d(t, v, GMP_RNDN); mpfr_mul(x, x, t, GMP_RNDN); mpfr_mul(y, y, t, GMP_RNDN); mpfr_mul(z, z, t, GMP_RNDN); return *this;}
+	SVector3mp&	operator /=(const mpfr_t& v)		{mpfr_div(x, x, v, GMP_RNDN); mpfr_div(y, y, v, GMP_RNDN); mpfr_div(z, z, v, GMP_RNDN); return *this;}
 	SVector3mp&	operator /=(const double v)			{*this *= 1/v; return *this;}
 
-	inline	double		Mag2()	const;
-			double		Mag()	const					{return sqrt(Mag2());}
+	inline	double		Mag2_d()	const;
+	inline	void		Mag2(mpfr_t& v)	const;
+			double		Mag_d()	const					{return sqrt(Mag2_d());}
+			void		Mag(mpfr_t& v)	const			{mpfr_t h; mpfr_init(h); Mag2(h); mpfr_sqrt(v, h, GMP_RNDN); mpfr_clear(h);}
 
-	void	clear()	{mpf_set_ui(x,0); mpf_set_ui(y,0); mpf_set_ui(z,0);}
+	void	clear()	{mpfr_set_ui(x,0, GMP_RNDN); mpfr_set_ui(y,0, GMP_RNDN); mpfr_set_ui(z,0, GMP_RNDN);}
 
-	void	print()				{printf("SVector3mp: %lf   %lf   %lf\n", mpf_get_d(x), mpf_get_d(y), mpf_get_d(z));}
+	void	print()				{printf("SVector3mp: %lf   %lf   %lf\n", mpfr_get_d(x, GMP_RNDN), mpfr_get_d(y, GMP_RNDN), mpfr_get_d(z, GMP_RNDN));}
 
 	friend	bool	operator ==(const SVector3mp& v1, const SVector3mp& v2);
 	friend	bool	operator !=(const SVector3mp& v1, const SVector3mp& v2);
@@ -59,52 +61,54 @@ inline	SVector3mp	cross(const SVector3mp& v1, const SVector3mp& v2);
 
 
 
-double	SVector3mp::Mag2()	const
+double	SVector3mp::Mag2_d()	const
 {
-	mpf_t h1; 
-	mpf_init(h1); 
-	mpf_mul(h1, x, x); 
-	
-	mpf_t h2; 
-	mpf_init(h2); 
-	mpf_mul(h2, y, y); 
-	
-	mpf_t res; 
-	mpf_init(res); 
-	mpf_add(res, h1, h2); 
-	
-	mpf_clear(h2);
-	mpf_set_ui(h1,0);
-	mpf_mul(h1, z, z); 
-	
-	mpf_add(res, res, h1);
-	mpf_clear(h2); 
-	
-	double	d = mpf_get_d(res);
-	mpf_clear(res);
-	
+	mpfr_t h; 
+	mpfr_init(h); 
+	Mag2(h);
+	double	d = mpfr_get_d(h, GMP_RNDN);
+	mpfr_clear(h);
 	return d;
+}
+void	SVector3mp::Mag2(mpfr_t& v)	const
+{
+	mpfr_t h1; 
+	mpfr_init(h1); 
+	mpfr_mul(h1, x, x, GMP_RNDN); 
+	
+	mpfr_t h2; 
+	mpfr_init(h2); 
+	mpfr_mul(h2, y, y, GMP_RNDN); 
+	
+	mpfr_add(v, h1, h2, GMP_RNDN); 
+	
+	mpfr_clear(h2);
+	mpfr_set_ui(h1, 0, GMP_RNDN);
+	mpfr_mul(h1, z, z, GMP_RNDN); 
+	
+	mpfr_add(v, v, h1, GMP_RNDN);
+	mpfr_clear(h1); 
 }
 	
 
 
 bool	operator ==(const SVector3mp& v1, const SVector3mp& v2)
 {
-	if(mpf_cmp(v1.x, v2.x))
+	if(mpfr_cmp(v1.x, v2.x))
 		return false;
-	if(mpf_cmp(v1.y, v2.y))
+	if(mpfr_cmp(v1.y, v2.y))
 		return false;
-	if(mpf_cmp(v1.z, v2.z))
+	if(mpfr_cmp(v1.z, v2.z))
 		return false;
 	return true;
 }
 bool	operator !=(const SVector3mp& v1, const SVector3mp& v2)
 {
-	if(mpf_cmp(v1.x, v2.x))
+	if(mpfr_cmp(v1.x, v2.x))
 		return true;
-	if(mpf_cmp(v1.y, v2.y))
+	if(mpfr_cmp(v1.y, v2.y))
 		return true;
-	if(mpf_cmp(v1.z, v2.z))
+	if(mpfr_cmp(v1.z, v2.z))
 		return true;
 	return false;
 }
@@ -115,62 +119,62 @@ SVector3mp	operator *(const SVector3mp& v1, const double v2)		{SVector3mp h(v1);
 SVector3mp	operator *(const double v1, const SVector3mp& v2)		{SVector3mp h(v2); h*=v1; return h;}
 double		operator *(const SVector3mp& v1, const SVector3mp& v2)	
 {
-	mpf_t h1; 
-	mpf_init(h1); 
-	mpf_mul(h1, v1.x, v2.x); 
+	mpfr_t h1; 
+	mpfr_init(h1); 
+	mpfr_mul(h1, v1.x, v2.x, GMP_RNDN); 
 	
-	mpf_t h2; 
-	mpf_init(h2); 
-	mpf_mul(h2, v1.y, v2.y); 
-	mpf_clear(h2); 
+	mpfr_t h2; 
+	mpfr_init(h2); 
+	mpfr_mul(h2, v1.y, v2.y, GMP_RNDN);
+	mpfr_clear(h2); 
 	
-	mpf_t res; 
-	mpf_init(res); 
-	mpf_add(res, h1, h2); 
+	mpfr_t res; 
+	mpfr_init(res); 
+	mpfr_add(res, h1, h2, GMP_RNDN); 
 	
-	mpf_set_ui(h1,0);
-	mpf_mul(h1, v1.z, v2.z); 
+	mpfr_set_ui(h1, 0, GMP_RNDN);
+	mpfr_mul(h1, v1.z, v2.z, GMP_RNDN); 
 	
-	mpf_add(res, res, h1); 
-	mpf_clear(h1); 
+	mpfr_add(res, res, h1, GMP_RNDN); 
+	mpfr_clear(h1); 
 	
-	double	d	= mpf_get_d(res);
-	mpf_clear(res); 
+	double	d	= mpfr_get_d(res, GMP_RNDN);
+	mpfr_clear(res); 
 	
 	return d;
 }
 SVector3mp	operator /(const SVector3mp& v1, const double v2)		{SVector3mp h(v1); h/=v2; return h;}
 SVector3mp	cross(const SVector3mp& v1, const SVector3mp& v2)			
 {
-	mpf_t	h1;
-	mpf_init(h1);
-	mpf_mul(h1, v1.y, v2.z);
-	mpf_t	h2;
-	mpf_init(h2);
-	mpf_mul(h1, v1.z, v2.y);
-	mpf_sub(h1, h1, h2);
+	mpfr_t	h1;
+	mpfr_init(h1);
+	mpfr_mul(h1, v1.y, v2.z, GMP_RNDN);
+	mpfr_t	h2;
+	mpfr_init(h2);
+	mpfr_mul(h1, v1.z, v2.y, GMP_RNDN);
+	mpfr_sub(h1, h1, h2, GMP_RNDN);
 	
-	mpf_t	xx;
-	mpf_init_set(xx, h1);
+	mpfr_t	xx;
+	mpfr_init_set(xx, h1, GMP_RNDN);
 	
-	mpf_mul(h1, v1.z, v2.x);
-	mpf_mul(h1, v1.x, v2.z);
-	mpf_sub(h1, h1, h2);
+	mpfr_mul(h1, v1.z, v2.x, GMP_RNDN);
+	mpfr_mul(h1, v1.x, v2.z, GMP_RNDN);
+	mpfr_sub(h1, h1, h2, GMP_RNDN);
 	
-	mpf_t	yy;
-	mpf_init_set(yy, h1);
+	mpfr_t	yy;
+	mpfr_init_set(yy, h1, GMP_RNDN);
 	
-	mpf_mul(h1, v1.x, v2.y);
-	mpf_mul(h1, v1.y, v2.x);
-	mpf_sub(h1, h1, h2);
+	mpfr_mul(h1, v1.x, v2.y, GMP_RNDN);
+	mpfr_mul(h1, v1.y, v2.x, GMP_RNDN);
+	mpfr_sub(h1, h1, h2, GMP_RNDN);
 	
 		
 	SVector3mp	ret(xx, yy, h1);
 	
-	mpf_clear(h1);
-	mpf_clear(h2);
-	mpf_clear(xx);
-	mpf_clear(yy);
+	mpfr_clear(h1);
+	mpfr_clear(h2);
+	mpfr_clear(xx);
+	mpfr_clear(yy);
 	
 	return ret;
 }
