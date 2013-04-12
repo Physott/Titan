@@ -36,7 +36,8 @@ public:
 	friend	bool	operator ==(const SVector3mp& v1, const SVector3mp& v2);
 	friend	bool	operator !=(const SVector3mp& v1, const SVector3mp& v2);
 
-	friend	double	operator *(const SVector3mp& v1, const SVector3mp& v2);
+	friend	double		operator *(const SVector3mp& v1, const SVector3mp& v2);
+	friend	SVector3mp	cross(const SVector3mp& v1, const SVector3mp& v2);	
 };
 
 
@@ -146,21 +147,21 @@ SVector3mp	cross(const SVector3mp& v1, const SVector3mp& v2)
 	mpf_sub(h1, h1, h2);
 	
 	mpf_t	xx;
-	mpf_init(xx, h1);
+	mpf_init_set(xx, h1);
 	
 	mpf_mul(h1, v1.z, v2.x);
 	mpf_mul(h1, v1.x, v2.z);
 	mpf_sub(h1, h1, h2);
 	
 	mpf_t	yy;
-	mpf_init(yy, h1);
+	mpf_init_set(yy, h1);
 	
 	mpf_mul(h1, v1.x, v2.y);
 	mpf_mul(h1, v1.y, v2.x);
 	mpf_sub(h1, h1, h2);
 	
 		
-	SVector3d	ret(xx, yy, h1);
+	SVector3mp	ret(xx, yy, h1);
 	
 	mpf_clear(h1);
 	mpf_clear(h2);

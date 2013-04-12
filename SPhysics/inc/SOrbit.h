@@ -14,7 +14,7 @@ private:
     mpf_t	argumentPeriapsis;
     mpf_t	meanAnomaly;
     
-    mpf_t	areaVelocity;
+    SVector3mp	areaVelocity;
 	
 public:
 	SOrbit(const SVector3mp& Position, const SVector3mp& Velocity);

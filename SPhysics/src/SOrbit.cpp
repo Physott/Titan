@@ -2,7 +2,7 @@
 
 
 
-SOrbit::SOrbit(const SVector3mp& Position, const SVector3mp& Velocity)
+SOrbit::SOrbit(const SVector3mp& Position, const SVector3mp& Velocity)	: areaVelocity()
 {
 	mpf_init(eccentricity);
 	mpf_init(semimajorAxis);
@@ -11,7 +11,6 @@ SOrbit::SOrbit(const SVector3mp& Position, const SVector3mp& Velocity)
 	mpf_init(argumentPeriapsis);
 	mpf_init(meanAnomaly);
 	
-	mpf_init(areaVelocity);
 }
 
 SOrbit::SOrbit(	const mpf_t& Eccentricity, 
@@ -19,7 +18,7 @@ SOrbit::SOrbit(	const mpf_t& Eccentricity,
 				const mpf_t& Inclination, 
 				const mpf_t& LongitudeAscendingNode, 
 				const mpf_t& ArgumentPeriapsis, 
-				const mpf_t& MeanAnomaly)	
+				const mpf_t& MeanAnomaly)				: areaVelocity()
 {
 	 mpf_init_set(eccentricity, Eccentricity);
 	 mpf_init_set(semimajorAxis, SemimajorAxis);
@@ -28,7 +27,8 @@ SOrbit::SOrbit(	const mpf_t& Eccentricity,
 	 mpf_init_set(argumentPeriapsis, ArgumentPeriapsis);
 	 mpf_init_set(meanAnomaly, MeanAnomaly);
 	 
-	 //mpf_init_set(areaVelocity, MeanAnomaly);
+	 //TO DO
+	 //areaVelocity, cross();
 }
 
 
@@ -48,4 +48,5 @@ SOrbit::~SOrbit()
 
 void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity)
 {
+	areaVelocity	= cross(Position, Velocity);
 }
