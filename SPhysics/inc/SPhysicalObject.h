@@ -12,10 +12,10 @@ public:
 	SPhysicalObject();
 	~SPhysicalObject();
 	
-			SVector3mp&		getPosition()			{return &position;}
-	const	SVector3mp&		getPosition()	const	{return &position;}
-			SVector3mp&		getVelocity()			{return &velocity;}
-	const	SVector3mp&		getVelocity()	const	{return &velocity;}
+			SVector3mp&		getPosition()			{return position;}
+	const	SVector3mp&		getPosition()	const	{return position;}
+			SVector3mp&		getVelocity()			{return velocity;}
+	const	SVector3mp&		getVelocity()	const	{return velocity;}
 	
 	void	setPosition(const SVector3mp& Position)			{position = Position;}
 	void	setVelocity(const SVector3mp& Velocity)			{velocity = Velocity;}
