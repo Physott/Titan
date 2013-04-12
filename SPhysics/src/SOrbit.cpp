@@ -61,7 +61,7 @@ void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity)
 	mpfr_asin(longitudeAscendingNode, longitudeAscendingNode, GMP_RNDN);
 	
 	mpfr_t	reziprokSemimajorAxis
-	mpfr_init_set(reziprokSemimajorAxis, , GMP_RNDN);
+	//mpfr_init_set(reziprokSemimajorAxis, , GMP_RNDN);
 	mpfr_t	h
-	mpfr_init_set(h, , GMP_RNDN);
+	//mpfr_init_set(h, , GMP_RNDN);
 }
