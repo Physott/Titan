@@ -23,5 +23,8 @@ int		main()
 		printf("ja\n");
 	else
 		printf("nein\n");
+		
+	SPhysics::init();
+	
 	return 0;
 }
