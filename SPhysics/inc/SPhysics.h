@@ -6,6 +6,9 @@
 #include "SMath.h"
 
 
+#define	CONSTANT_G	6.67384e-11
+
+
 
 class	SPhysics;
 extern	SPhysics*	gPhysics;

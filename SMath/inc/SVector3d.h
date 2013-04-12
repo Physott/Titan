@@ -34,10 +34,6 @@ public:
 
 	void	print()				{printf("Vector3d: %lf   %lf   %lf\n", x, y, z);}
 
-	friend	bool	operator ==(const SVector3d& v1, const SVector3d& v2);
-	friend	bool	operator !=(const SVector3d& v1, const SVector3d& v2);
-
-	friend	double	operator *(const SVector3d& v1, const SVector3d& v2);
 };
 
 

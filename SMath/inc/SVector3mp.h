@@ -4,12 +4,11 @@
 
 class	SVector3mp
 {
-private:
+public:
 	mpfr_t	x;
 	mpfr_t	y;
 	mpfr_t	z;
 
-public:
 	SVector3mp()														{mpfr_init(x); mpfr_init(y); mpfr_init(z);}
 	SVector3mp(const double xx, const double yy, const double zz)		{mpfr_init_set_d(x, xx, GMP_RNDN); mpfr_init_set_d(y, yy, GMP_RNDN); mpfr_init_set_d(z, zz, GMP_RNDN);}
 	SVector3mp(const mpfr_t& xx, const mpfr_t& yy, const mpfr_t& zz)	{mpfr_init_set(x, xx, GMP_RNDN); mpfr_init_set(y, yy, GMP_RNDN); mpfr_init_set(z, zz, GMP_RNDN);}

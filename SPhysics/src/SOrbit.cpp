@@ -2,7 +2,7 @@
 
 
 
-SOrbit::SOrbit(const SVector3mp& Position, const SVector3mp& Velocity)	: areaVelocityNorm(cross(Position, Velocity))
+SOrbit::SOrbit(const SVector3mp& Position, const SVector3mp& Velocity)	: areaVelocityNorm()
 {
 	mpfr_init(eccentricity);
 	mpfr_init(semimajorAxis);
@@ -12,8 +12,8 @@ SOrbit::SOrbit(const SVector3mp& Position, const SVector3mp& Velocity)	: areaVel
 	mpfr_init(meanAnomaly);
 	
 	mpfr_init(areaVelocity);
-	areaVelocityNorm.Mag(areaVelocity);
-	areaVelocityNorm	/= areaVelocity;
+	
+	set(Position, Velocity);
 }
 
 SOrbit::SOrbit(	const mpfr_t& Eccentricity, 
@@ -54,4 +54,14 @@ void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity)
 	areaVelocityNorm	= cross(Position, Velocity);
 	areaVelocityNorm.Mag(areaVelocity);
 	areaVelocityNorm	/= areaVelocity;
+	
+	mpfr_acos(inclination, areaVelocityNorm.z, GMP_RNDN);
+	mpfr_sin(longitudeAscendingNode, inclination, GMP_RNDN);
+	mpfr_div(longitudeAscendingNode, areaVelocityNorm.x, longitudeAscendingNode, GMP_RNDN);
+	mpfr_asin(longitudeAscendingNode, longitudeAscendingNode, GMP_RNDN);
+	
+	mpfr_t	reziprokSemimajorAxis
+	mpfr_init_set(reziprokSemimajorAxis, , GMP_RNDN);
+	mpfr_t	h
+	mpfr_init_set(h, , GMP_RNDN);
 }
