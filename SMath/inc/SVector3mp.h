@@ -20,10 +20,14 @@ public:
 	
 	SVector3mp&	operator =(const SVector3mp& v)		{mpf_init_set(x, v.x); mpf_init_set(y, v.y); mpf_init_set(z, v.z); return *this;}
 	SVector3mp&	operator +=(const SVector3mp& v)	{mpf_add(x, x, v.x); mpf_add(y, y, v.y); mpf_add(z, z, v.z); return *this;}
+	SVector3mp&	operator +=(const mpf_t& v)			{mpf_add(x, x, v); mpf_add(y, y, v); mpf_add(z, z, v); return *this;}
 	SVector3mp&	operator +=(const double v)			{mpf_t	t; mpf_init_set_d(t, v); mpf_add(x, x, t); mpf_add(y, y, t); mpf_add(z, z, t); return *this;}
 	SVector3mp&	operator -=(const SVector3mp& v)	{mpf_sub(x, x, v.x); mpf_sub(y, y, v.y); mpf_sub(z, z, v.z); return *this;}
+	SVector3mp&	operator -=(const mpf_t& v)			{mpf_sub(x, x, v); mpf_sub(y, y, v); mpf_sub(z, z, v); return *this;}
 	SVector3mp&	operator -=(const double v)			{mpf_t	t; mpf_init_set_d(t, v); mpf_sub(x, x, t); mpf_sub(y, y, t); mpf_sub(z, z, t); return *this;}
+	SVector3mp&	operator *=(const mpf_t& v)			{mpf_mul(x, x, v); mpf_mul(y, y, v); mpf_mul(z, z, v); return *this;}
 	SVector3mp&	operator *=(const double v)			{mpf_t	t; mpf_init_set_d(t, v); mpf_mul(x, x, t); mpf_mul(y, y, t); mpf_mul(z, z, t); return *this;}
+	SVector3mp&	operator /=(const mpf_t& v)			{mpf_div(x, x, v); mpf_div(y, y, v); mpf_div(z, z, v); return *this;}
 	SVector3mp&	operator /=(const double v)			{*this *= 1/v; return *this;}
 
 	inline	double		Mag2()	const;

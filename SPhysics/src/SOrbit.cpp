@@ -40,8 +40,6 @@ SOrbit::~SOrbit()
 	mpf_clear(longitudeAscendingNode);
 	mpf_clear(argumentPeriapsis);
 	mpf_clear(meanAnomaly);
-	
-	mpf_clear(areaVelocity);
 }
 
 
