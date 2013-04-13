@@ -17,3 +17,7 @@
 
 #builded binaries
 bin/*
+
+#ignore local mpfr
+mpfr-3.1.2
+mpfr-3.1.2/*
