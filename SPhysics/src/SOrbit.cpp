@@ -58,6 +58,10 @@ SOrbit::~SOrbit()
 
 void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const double Masses)
 {
+	//Position.print();
+	//Velocity.print();
+	//printf("k2: %lf\n",Masses);
+	
 	//Variables
 	mpfr_t	k2;
 	mpfr_init(k2);
@@ -79,16 +83,27 @@ void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const d
 	mpfr_init(tanW2);
 	
 	//inclination
-	areaVelocityNorm	= cross(Position, Velocity);	// vk = vr x vv
-	areaVelocityNorm.Mag2(k2);							//  k² = |vk|²
-	mpfr_sqrt(areaVelocity, k2, GMP_RNDN);				//  k  = sqrt(k²)
-	areaVelocityNorm	/= areaVelocity;				//  norm vk
-	
-	//inclinationlongitudeAscendingNode
+	areaVelocityNorm	= cross(Position, Velocity);		// vk = vr x vv
+	printf("areaVelocityNorm:"); areaVelocityNorm.print();
+	areaVelocityNorm.Mag2(k2);								//  k² = |vk|²
+	printf("k2: %lf\n",mpfr_get_d(k2, GMP_RNDN));
+	mpfr_sqrt(areaVelocity, k2, GMP_RNDN);					//  k  = sqrt(k²)
+	printf("areaVelocity: %lf\n",mpfr_get_d(areaVelocity, GMP_RNDN));
+	areaVelocityNorm	/= areaVelocity;					//  norm vk
+	printf("areaVelocityNorm:"); areaVelocityNorm.print();
 	mpfr_acos(inclination, areaVelocityNorm.z, GMP_RNDN);	// i 		= acos(znorm)
+	printf("Inclination: %lf\n",mpfr_get_d(inclination, GMP_RNDN));
+	
+	//longitudeAscendingNode
 	mpfr_sin(sinI, inclination, GMP_RNDN);					// sin(i)	= sin(i)
-	mpfr_div(sinO, areaVelocityNorm.x, sinI, GMP_RNDN);		// sin(lAN)	= x/sin(i)
+	printf("sinI: %lf\n",mpfr_get_d(sinI, GMP_RNDN));
+	if(mpfr_zero_p(sinI))
+		mpfr_set_ui(sinO, 0, GMP_RNDN);
+	else
+		mpfr_div(sinO, areaVelocityNorm.x, sinI, GMP_RNDN);		// sin(lAN)	= x/sin(i)
+	printf("sinO: %lf\n",mpfr_get_d(sinO, GMP_RNDN));
 	mpfr_asin(longitudeAscendingNode, sinO, GMP_RNDN);		// lAN		= asin(sin(lAN))
+	printf("LongitudeAscendingNode: %lf\n",mpfr_get_d(longitudeAscendingNode, GMP_RNDN));
 	
 	//reziprokSemimajorAxis
 	Position.Mag(r);																// r	= |vr|
@@ -97,12 +112,14 @@ void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const d
 	double con	= CONSTANT_G * Masses;												// con	= G(M+m) (local constant)
 	mpfr_div_d(eccentricity, eccentricity, con, GMP_RNDN);							// e	= |vr|²/G(M+m) (e is not complete result) (e is only buffer)
 	mpfr_sub(reziprokSemimajorAxis, reziprokSemimajorAxis, eccentricity, GMP_RNDN);	// 1/a	= 2/r - |vr|²/G(M+m)
+	printf("ReziprokSemimajorAxis: %lf\n",mpfr_get_d(reziprokSemimajorAxis, GMP_RNDN));
 	
 	//eccentricity
 	mpfr_div_d(eccentricity, k2, con, GMP_RNDN);								// e	= k²/G(M+m) = p (e is not complete result)
 	mpfr_mul(eccentricity, eccentricity, reziprokSemimajorAxis, GMP_RNDN);		// e	= p/a (e is not complete result)
 	mpfr_ui_sub(eccentricity, 1, eccentricity, GMP_RNDN);						// e	= 1 - p/a (e is not complete result)
 	mpfr_sqrt(eccentricity, eccentricity, GMP_RNDN);							// e	= sqrt(1 - p/a)
+	printf("Eccentricity: %lf\n",mpfr_get_d(eccentricity, GMP_RNDN));
 	
 	//longitudePlanet
 	mpfr_cos(u, longitudeAscendingNode, GMP_RNDN);				// u 		= cos(lAN) (u is not complete result)
@@ -130,6 +147,7 @@ void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const d
 				mpfr_sub(u, sinO, u, GMP_RNDN);	
 			}
 		}
+	printf("u: %lf\n",mpfr_get_d(u, GMP_RNDN));
 	
 	//find type
 	int	cmp	= mpfr_cmp_d(reziprokSemimajorAxis, SORBIT_PARABOLIC_LIMIT);
@@ -138,6 +156,7 @@ void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const d
 		//type
 		type	= elliptic;
 		mpfr_ui_div(semimajorAxis, 1, reziprokSemimajorAxis, GMP_RNDN);		// a	= 1/a
+		printf("elliptic\n");
 		
 		//cosE
 		/*mpfr_mul(E, r, reziprokSemimajorAxis, GMP_RNDN);					// E	= r/a (cos(E) is not complete result) (E is only buffer for sin(E))
@@ -152,6 +171,7 @@ void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const d
 		dot(epochPeriapsis, Position, Velocity);								// M		= vr.vv (M is not complete result) (M is only buffer)
 		mpfr_div(sinE, epochPeriapsis, sinE, GMP_RNDN);						// sin(E)	= vr.vv / (e sqrt(|a| G(M+m))) 
 		mpfr_asin(E, sinE, GMP_RNDN);										// E		= asin(sin(E))
+		printf("sinE: %lf\n",mpfr_get_d(sinE, GMP_RNDN));
 		
 		//check if cosE>0 && sinE<0      ||     cosE<0 && sinE<0
 		mpfr_mul(epochPeriapsis, r, reziprokSemimajorAxis, GMP_RNDN);		
@@ -177,6 +197,8 @@ void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const d
 				mpfr_sub(E, epochPeriapsis, E, GMP_RNDN);	
 			}
 		}
+		printf("E: %lf\n",mpfr_get_d(E, GMP_RNDN));
+		mpfr_printf ("%.128RNf", E);
 		
 		//tanW2
 		
@@ -187,6 +209,7 @@ void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const d
 		//type
 		type	= hyperbolic;
 		mpfr_ui_div(semimajorAxis, 1, reziprokSemimajorAxis, GMP_RNDN);
+		printf("hyperbolic\n");
 	}
 	else
 	{
@@ -194,6 +217,7 @@ void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const d
 		type	= parabolic;
 		mpfr_add_ui(semimajorAxis, eccentricity, 1, GMP_RNDN);
 		//mpfr_div(semimajorAxis, h, semimajorAxis, GMP_RNDN);
+		printf("parabolic\n");
 	}
 	
 	mpfr_clear(k2);

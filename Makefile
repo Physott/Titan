@@ -18,7 +18,7 @@ print:
 $(EXECUTABLE): $(OBJECTS)
 	@echo
 	@echo "start generating $@"
-	$(CC) $(LDFLAGS) $(INC) obj/$(OBJECTS) -static -lmpfr -lgmp -lSMath -lSPhysics -o bin/$@
+	$(CC) $(LDFLAGS) $(INC) obj/$(OBJECTS) -static -lSPhysics -lSMath -lmpfr -lgmp -o bin/$@
 	@echo "$@ done"
 	@echo
 
