@@ -166,7 +166,7 @@ SVector3mp	cross(const SVector3mp& v1, const SVector3mp& v2)
 	
 		
 	SVector3mp	ret(xx, yy, h1);
-	ret.print();
+	//ret.print();
 	
 	mpfr_clear(h1);
 	mpfr_clear(h2);
