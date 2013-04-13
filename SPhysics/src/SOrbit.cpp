@@ -24,15 +24,15 @@ SOrbit::SOrbit(	const SEOrbit Type,
 				const mpfr_t& Inclination, 
 				const mpfr_t& LongitudeAscendingNode, 
 				const mpfr_t& ArgumentPeriapsis, 
-				const mpfr_t& epochPeriapsis,
-				const mpfr_t& epoch)				: type(Type), areaVelocityNorm()
+				const mpfr_t& EpochPeriapsis,
+				const mpfr_t& Epoch)				: type(Type), areaVelocityNorm()
 {
 	 mpfr_init_set(eccentricity, Eccentricity, GMP_RNDN);
 	 mpfr_init_set(semimajorAxis, SemimajorAxis, GMP_RNDN);
 	 mpfr_init_set(inclination, Inclination, GMP_RNDN);
 	 mpfr_init_set(longitudeAscendingNode, LongitudeAscendingNode, GMP_RNDN);
 	 mpfr_init_set(argumentPeriapsis, ArgumentPeriapsis, GMP_RNDN);
-	 mpfr_init_set(epochPeriapsis, epochPeriapsis, GMP_RNDN);
+	 mpfr_init_set(epochPeriapsis, EpochPeriapsis, GMP_RNDN);
 	 //TO DO
 	 mpfr_init(TrueAnomaly);
 	 //TO DO
