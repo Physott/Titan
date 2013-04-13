@@ -18,14 +18,14 @@ SOrbit::SOrbit(const SVector3mp& Position, const SVector3mp& Velocity, const mpf
 	set(Position, Velocity, time, Masses);
 }
 
-SOrbit::SOrbit(	const SEOrbit Type, 
+/*SOrbit::SOrbit(	const SEOrbit Type, 
 				const mpfr_t& Eccentricity, 
 				const mpfr_t& SemimajorAxis, 
 				const mpfr_t& Inclination, 
 				const mpfr_t& LongitudeAscendingNode, 
 				const mpfr_t& ArgumentPeriapsis, 
 				const mpfr_t& EpochPeriapsis,
-				const mpfr_t& Epoch)				: type(Type), areaVelocityNorm()
+				const mpfr_t& TrueAnomaly)				: type(Type), areaVelocityNorm()
 {
 	 mpfr_init_set(eccentricity, Eccentricity, GMP_RNDN);
 	 mpfr_init_set(semimajorAxis, SemimajorAxis, GMP_RNDN);
@@ -33,10 +33,21 @@ SOrbit::SOrbit(	const SEOrbit Type,
 	 mpfr_init_set(longitudeAscendingNode, LongitudeAscendingNode, GMP_RNDN);
 	 mpfr_init_set(argumentPeriapsis, ArgumentPeriapsis, GMP_RNDN);
 	 mpfr_init_set(epochPeriapsis, EpochPeriapsis, GMP_RNDN);
-	 //TO DO
-	 mpfr_init(trueAnomaly);
+	 mpfr_init_set(trueAnomaly, TrueAnomaly, GMP_RNDN);
 	 //TO DO
 	 mpfr_init(areaVelocity);
+}*/
+
+SOrbit::SOrbit(	const SOrbit& Orbit)		: type(Orbit.type), areaVelocityNorm(Orbit.areaVelocityNorm)
+{
+	 mpfr_init_set(eccentricity, Orbit.eccentricity, GMP_RNDN);
+	 mpfr_init_set(semimajorAxis, Orbit.semimajorAxis, GMP_RNDN);
+	 mpfr_init_set(inclination, Orbit.inclination, GMP_RNDN);
+	 mpfr_init_set(longitudeAscendingNode, Orbit.longitudeAscendingNode, GMP_RNDN);
+	 mpfr_init_set(argumentPeriapsis, Orbit.argumentPeriapsis, GMP_RNDN);
+	 mpfr_init_set(epochPeriapsis, Orbit.epochPeriapsis, GMP_RNDN);
+	 mpfr_init_set(trueAnomaly, Orbit.trueAnomaly, GMP_RNDN);
+	 mpfr_init_set(areaVelocity, Orbit.areaVelocity, GMP_RNDN);
 }
 
 

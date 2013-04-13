@@ -31,7 +31,11 @@ private:
 	
 public:
 	SOrbit(const SVector3mp& Position, const SVector3mp& Velocity, const mpfr_t time, const double Masses);
-	SOrbit(const SEOrbit Type, const mpfr_t& Eccentricity, const mpfr_t& SemimajorAxis, const mpfr_t& Inclination, const mpfr_t& LongitudeAscendingNode, const mpfr_t& ArgumentPeriapsis, const mpfr_t& epochPeriapsis, const mpfr_t& epoch);
+	/*SOrbit(	const SEOrbit Type, const mpfr_t& Eccentricity, 
+			const mpfr_t& SemimajorAxis, const mpfr_t& Inclination, 
+			const mpfr_t& LongitudeAscendingNode, const mpfr_t& ArgumentPeriapsis, 
+			const mpfr_t& epochPeriapsis, const mpfr_t& trueAnomaly);*/
+	SOrbit(const SOrbit& Orbit);
 	~SOrbit();
 	
 	void	set(const SVector3mp& Position, const SVector3mp& Velocity, const mpfr_t time, const double Masses);
