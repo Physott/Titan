@@ -3,7 +3,7 @@
 
 
 
-class	SMassPoint
+class	SMassPoint : public SPhysicalObject
 {
 private:
 	double	mass;

@@ -2,7 +2,7 @@
 
 
 
-SOrbit::SOrbit(const SVector3mp& Position, const SVector3mp& Velocity)	: areaVelocityNorm()
+SOrbit::SOrbit(const SVector3mp& Position, const SVector3mp& Velocity, const double Masses)	: areaVelocityNorm()
 {
 	mpfr_init(eccentricity);
 	mpfr_init(semimajorAxis);
@@ -13,15 +13,16 @@ SOrbit::SOrbit(const SVector3mp& Position, const SVector3mp& Velocity)	: areaVel
 	
 	mpfr_init(areaVelocity);
 	
-	set(Position, Velocity);
+	set(Position, Velocity, Masses);
 }
 
-SOrbit::SOrbit(	const mpfr_t& Eccentricity, 
+SOrbit::SOrbit(	const SEOrbit Type, 
+				const mpfr_t& Eccentricity, 
 				const mpfr_t& SemimajorAxis, 
 				const mpfr_t& Inclination, 
 				const mpfr_t& LongitudeAscendingNode, 
 				const mpfr_t& ArgumentPeriapsis, 
-				const mpfr_t& MeanAnomaly)				: areaVelocityNorm()
+				const mpfr_t& MeanAnomaly)				: type(Type), areaVelocityNorm()
 {
 	 mpfr_init_set(eccentricity, Eccentricity, GMP_RNDN);
 	 mpfr_init_set(semimajorAxis, SemimajorAxis, GMP_RNDN);
@@ -49,19 +50,153 @@ SOrbit::~SOrbit()
 
 
 
-void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity)
+void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const double Masses)
 {
-	areaVelocityNorm	= cross(Position, Velocity);
-	areaVelocityNorm.Mag(areaVelocity);
-	areaVelocityNorm	/= areaVelocity;
+	//Variables
+	mpfr_t	k2;
+	mpfr_init(k2);
+	mpfr_t	sinI;
+	mpfr_init(sinI);
+	mpfr_t	sinO;
+	mpfr_init(sinO);
+	mpfr_t	r;
+	mpfr_init(r);
+	mpfr_t	reziprokSemimajorAxis;		
+	mpfr_init(reziprokSemimajorAxis);
+	mpfr_t	u;
+	mpfr_init(u);
+	mpfr_t	sinE;
+	mpfr_init(sinE);
+	mpfr_t	E;
+	mpfr_init(E);
+	mpfr_t	tanW2;
+	mpfr_init(tanW2);
 	
-	mpfr_acos(inclination, areaVelocityNorm.z, GMP_RNDN);
-	mpfr_sin(longitudeAscendingNode, inclination, GMP_RNDN);
-	mpfr_div(longitudeAscendingNode, areaVelocityNorm.x, longitudeAscendingNode, GMP_RNDN);
-	mpfr_asin(longitudeAscendingNode, longitudeAscendingNode, GMP_RNDN);
+	//inclination
+	areaVelocityNorm	= cross(Position, Velocity);	// vk = vr x vv
+	areaVelocityNorm.Mag2(k2);							//  k² = |vk|²
+	mpfr_sqrt(areaVelocity, k2, GMP_RNDN);				//  k  = sqrt(k²)
+	areaVelocityNorm	/= areaVelocity;				//  norm vk
 	
-	//mpfr_t	reziprokSemimajorAxis;
-	//mpfr_init_set(reziprokSemimajorAxis, , GMP_RNDN);
-	//mpfr_t	h;
-	//mpfr_init_set(h, , GMP_RNDN);
+	//inclinationlongitudeAscendingNode
+	mpfr_acos(inclination, areaVelocityNorm.z, GMP_RNDN);	// i 		= acos(znorm)
+	mpfr_sin(sinI, inclination, GMP_RNDN);					// sin(i)	= sin(i)
+	mpfr_div(sinO, areaVelocityNorm.x, sinI, GMP_RNDN);		// sin(lAN)	= x/sin(i)
+	mpfr_asin(longitudeAscendingNode, sinO, GMP_RNDN);		// lAN		= asin(sin(lAN))
+	
+	//reziprokSemimajorAxis
+	Position.Mag(r);																// r	= |vr|
+	mpfr_ui_div(reziprokSemimajorAxis, 2, r, GMP_RNDN);								// 1/a	= 2/r	(1/a is not complete result)
+	Velocity.Mag2(eccentricity);													// e	= |vr|²	(e is not complete result) (e is only buffer)
+	double con	= CONSTANT_G * Masses;												// con	= G(M+m) (local constant)
+	mpfr_div_d(eccentricity, eccentricity, con, GMP_RNDN);							// e	= |vr|²/G(M+m) (e is not complete result) (e is only buffer)
+	mpfr_sub(reziprokSemimajorAxis, reziprokSemimajorAxis, eccentricity, GMP_RNDN);	// 1/a	= 2/r - |vr|²/G(M+m)
+	
+	//eccentricity
+	mpfr_div_d(eccentricity, k2, con, GMP_RNDN);								// e	= k²/G(M+m) = p (e is not complete result)
+	mpfr_mul(eccentricity, eccentricity, reziprokSemimajorAxis, GMP_RNDN);		// e	= p/a (e is not complete result)
+	mpfr_ui_sub(eccentricity, 1, eccentricity, GMP_RNDN);						// e	= 1 - p/a (e is not complete result)
+	mpfr_sqrt(eccentricity, eccentricity, GMP_RNDN);							// e	= sqrt(1 - p/a)
+	
+	//longitudePlanet
+	mpfr_cos(u, longitudeAscendingNode, GMP_RNDN);				// u 		= cos(lAN) (u is not complete result)
+	mpfr_mul(u, Position.x, u, GMP_RNDN);						// u 		= x cos(lAN) (u is not complete result)
+	mpfr_mul(sinO, Position.y, sinO, GMP_RNDN);					// sin(lAN) = y sin(lAN) (sin(lAN) is only buffer)
+	mpfr_add(u, u, sinO, GMP_RNDN);								// u		= x cos(lAN) + y sin(lAN) (u is not complete result)
+	mpfr_div(u, u, r, GMP_RNDN);								// u		= (1/r)(x cos(lAN) + y sin(lAN)) (u is not complete result)
+	mpfr_acos(u, u, GMP_RNDN);									// u		= acos((1/r)(x cos(lAN) + y sin(lAN)))
+		//check if sin<0
+		if(mpfr_signbit(Position.z))
+		{
+			if(!mpfr_signbit(sinI))
+			{
+				mpfr_const_pi(sinO, GMP_RNDN);					// if sin<0		angle = 360° - angle
+				mpfr_mul_ui(sinO, sinO, 2, GMP_RNDN);	
+				mpfr_sub(u, sinO, u, GMP_RNDN);	
+			}
+		}
+		else
+		{
+			if(mpfr_signbit(sinI))
+			{
+				mpfr_const_pi(sinO, GMP_RNDN);					// if sin<0		angle = 360° - angle
+				mpfr_mul_ui(sinO, sinO, 2, GMP_RNDN);	
+				mpfr_sub(u, sinO, u, GMP_RNDN);	
+			}
+		}
+	
+	//find type
+	int	cmp	= mpfr_cmp_d(reziprokSemimajorAxis, SORBIT_PARABOLIC_LIMIT);
+	if(cmp>0)
+	{
+		//type
+		type	= elliptic;
+		mpfr_ui_div(semimajorAxis, 1, reziprokSemimajorAxis, GMP_RNDN);		// a	= 1/a
+		
+		//cosE
+		/*mpfr_mul(E, r, reziprokSemimajorAxis, GMP_RNDN);					// E	= r/a (cos(E) is not complete result) (E is only buffer for sin(E))
+		mpfr_ui_sub(E, 1, cosE, GMP_RNDN);									// E	= 1 - r/a (cos(E) is not complete result) (E is only buffer for sin(E))
+		mpfr_div(E, E, eccentricity, GMP_RNDN);								// E	= (1 - r/a)/e		*/
+		
+		//sinE
+		mpfr_abs(sinE, semimajorAxis, GMP_RNDN);							// sin(E)	= |a| (E is not complete result) 
+		mpfr_mul_d(sinE, sinE, con, GMP_RNDN);								// sin(E)	= |a| G(M+m) (E is not complete result) 
+		mpfr_sqrt(sinE, sinE, GMP_RNDN);									// sin(E)	= sqrt(|a| G(M+m)) (E is not complete result) 
+		mpfr_mul(sinE, sinE, eccentricity, GMP_RNDN);						// sin(E)	= e sqrt(|a| G(M+m)) (E is not complete result)
+		dot(meanAnomaly, Position, Velocity);								// M		= vr.vv (M is not complete result) (M is only buffer)
+		mpfr_div(sinE, meanAnomaly, sinE, GMP_RNDN);						// sin(E)	= vr.vv / (e sqrt(|a| G(M+m))) 
+		mpfr_asin(E, sinE, GMP_RNDN);										// E		= asin(sin(E))
+		
+		//check if cosE>0 && sinE<0      ||     cosE<0 && sinE<0
+		mpfr_mul(meanAnomaly, r, reziprokSemimajorAxis, GMP_RNDN);		
+		if(mpfr_cmp_ui(sinE, 0)<0)
+		{
+			if(mpfr_cmp_ui(sinE, 1)>0)
+			{
+				mpfr_const_pi(meanAnomaly, GMP_RNDN);					// if sin<0 && cos<0		angle = 180° - angle
+				mpfr_sub(E, meanAnomaly, E, GMP_RNDN);	
+			}
+			else
+			{
+				mpfr_const_pi(meanAnomaly, GMP_RNDN);					// if sin<0 && cos>0		angle = 360° + angle
+				mpfr_mul_ui(meanAnomaly, sinO, 2, GMP_RNDN);	
+				mpfr_add(E, meanAnomaly, E, GMP_RNDN);	
+			}
+		}
+		else
+		{
+			if(mpfr_cmp_ui(sinE, 1)>0)
+			{
+				mpfr_const_pi(meanAnomaly, GMP_RNDN);					// if sin<0 && cos<0		angle = 180° - angle
+				mpfr_sub(E, meanAnomaly, E, GMP_RNDN);	
+			}
+		}
+		
+		//tanW2
+		
+		
+	}
+	else if(cmp<(-SORBIT_PARABOLIC_LIMIT))
+	{
+		//type
+		type	= hyperbolic;
+		mpfr_ui_div(semimajorAxis, 1, reziprokSemimajorAxis, GMP_RNDN);
+	}
+	else
+	{
+		//type
+		type	= parabolic;
+		mpfr_add_ui(semimajorAxis, eccentricity, 1, GMP_RNDN);
+		//mpfr_div(semimajorAxis, h, semimajorAxis, GMP_RNDN);
+	}
+	
+	mpfr_clear(k2);
+	mpfr_clear(sinI);
+	mpfr_clear(sinO);
+	mpfr_clear(r);
+	mpfr_clear(reziprokSemimajorAxis);
+	mpfr_clear(u);
+	mpfr_clear(sinE);
+	mpfr_clear(E);
+	mpfr_clear(tanW2);
 }

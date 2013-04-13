@@ -26,5 +26,19 @@ int		main()
 		
 	SPhysics::init();
 	
+	mpfr_t	test;
+	mpfr_init_set_ui(test, 1, GMP_RNDN);
+	mpfr_asin(test, test, GMP_RNDN);
+	printf("%lf\n", mpfr_get_d(test, GMP_RNDN));
+	mpfr_set_si(test, -1, GMP_RNDN);
+	mpfr_asin(test, test, GMP_RNDN);
+	printf("%lf\n", mpfr_get_d(test, GMP_RNDN));
+	mpfr_set_ui(test, 1, GMP_RNDN);
+	mpfr_acos(test, test, GMP_RNDN);
+	printf("%lf\n", mpfr_get_d(test, GMP_RNDN));
+	mpfr_set_si(test, -1, GMP_RNDN);
+	mpfr_acos(test, test, GMP_RNDN);
+	printf("%lf\n", mpfr_get_d(test, GMP_RNDN));
+	
 	return 0;
 }

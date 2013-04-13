@@ -57,6 +57,7 @@ inline	double		operator *(const SVector3mp& v1, const SVector3mp& v2);
 inline	SVector3mp	operator /(const SVector3mp& v1, const double v2);
 inline	SVector3mp	operator /(const double v1, const SVector3mp& v2);
 inline	SVector3mp	cross(const SVector3mp& v1, const SVector3mp& v2);
+inline	void		dot(mpfr_t res, const SVector3mp& v1, const SVector3mp& v2);
 
 
 
@@ -118,29 +119,10 @@ SVector3mp	operator *(const SVector3mp& v1, const double v2)		{SVector3mp h(v1);
 SVector3mp	operator *(const double v1, const SVector3mp& v2)		{SVector3mp h(v2); h*=v1; return h;}
 double		operator *(const SVector3mp& v1, const SVector3mp& v2)	
 {
-	mpfr_t h1; 
-	mpfr_init(h1); 
-	mpfr_mul(h1, v1.x, v2.x, GMP_RNDN); 
-	
-	mpfr_t h2; 
-	mpfr_init(h2); 
-	mpfr_mul(h2, v1.y, v2.y, GMP_RNDN);
-	mpfr_clear(h2); 
-	
-	mpfr_t res; 
-	mpfr_init(res); 
-	mpfr_add(res, h1, h2, GMP_RNDN); 
-	
-	mpfr_set_ui(h1, 0, GMP_RNDN);
-	mpfr_mul(h1, v1.z, v2.z, GMP_RNDN); 
-	
-	mpfr_add(res, res, h1, GMP_RNDN); 
-	mpfr_clear(h1); 
-	
-	double	d	= mpfr_get_d(res, GMP_RNDN);
-	mpfr_clear(res); 
-	
-	return d;
+	double	xx	= mpfr_get_d(v1.x, GMP_RNDN) * mpfr_get_d(v2.x, GMP_RNDN);
+	double	yy	= mpfr_get_d(v1.y, GMP_RNDN) * mpfr_get_d(v2.y, GMP_RNDN);
+	double	zz	= mpfr_get_d(v1.z, GMP_RNDN) * mpfr_get_d(v2.z, GMP_RNDN);
+	return xx+yy+zz;
 }
 SVector3mp	operator /(const SVector3mp& v1, const double v2)		{SVector3mp h(v1); h/=v2; return h;}
 SVector3mp	cross(const SVector3mp& v1, const SVector3mp& v2)			
@@ -177,7 +159,18 @@ SVector3mp	cross(const SVector3mp& v1, const SVector3mp& v2)
 	
 	return ret;
 }
-
+void		dot(mpfr_t res, const SVector3mp& v1, const SVector3mp& v2)
+{
+	mpfr_mul(res, v1.x, v2.x, GMP_RNDN); 
+	
+	mpfr_t h; 
+	mpfr_init(h); 
+	mpfr_mul(h, v1.y, v2.y, GMP_RNDN);
+	mpfr_add(res, res, h, GMP_RNDN); 
+	mpfr_mul(h, v1.z, v2.z, GMP_RNDN); 
+	mpfr_add(res, res, h, GMP_RNDN); 
+	mpfr_clear(h); 
+}
 
 
 
