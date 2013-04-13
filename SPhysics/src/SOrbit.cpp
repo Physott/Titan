@@ -168,7 +168,8 @@ void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const d
 		mpfr_mul_d(sinE, sinE, con, GMP_RNDN);								// sin(E)	= |a| G(M+m) (E is not complete result) 
 		mpfr_sqrt(sinE, sinE, GMP_RNDN);									// sin(E)	= sqrt(|a| G(M+m)) (E is not complete result) 
 		mpfr_mul(sinE, sinE, eccentricity, GMP_RNDN);						// sin(E)	= e sqrt(|a| G(M+m)) (E is not complete result)
-		dot(epochPeriapsis, Position, Velocity);								// M		= vr.vv (M is not complete result) (M is only buffer)
+		dot(epochPeriapsis, Position, Velocity);							// M		= vr.vv (M is not complete result) (M is only buffer)
+		//TODO if(sinE==0)
 		mpfr_div(sinE, epochPeriapsis, sinE, GMP_RNDN);						// sin(E)	= vr.vv / (e sqrt(|a| G(M+m))) 
 		mpfr_asin(E, sinE, GMP_RNDN);										// E		= asin(sin(E))
 		printf("sinE: %lf\n",mpfr_get_d(sinE, GMP_RNDN));
