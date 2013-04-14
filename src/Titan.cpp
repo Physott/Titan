@@ -47,7 +47,7 @@ int		main()
 	mpfr_t	bbb;
 	mpfr_init_set_ui(aaa, 1, GMP_RNDN);
 	mpfr_init(bbb);
-	SOrbit	orbit(vv1, vv2, aaa, 1000.0/CONSTANT_G);
+	SOrbit	orbit(vv1, vv2, 1000.0/CONSTANT_G, aaa);
 
 	printf("\n\n%lf\n", mpfr_get_d(aaa, GMP_RNDN));
 	printf("%lf\n", mpfr_get_d(bbb, GMP_RNDN));
@@ -55,6 +55,8 @@ int		main()
 	printf("%lf\n", mpfr_get_d(aaa, GMP_RNDN));
 	printf("%lf\n", mpfr_get_d(bbb, GMP_RNDN));
 	
+	for(int i=0; i<10000; i++)
+		orbit.set(vv1, vv2, 1000.0/CONSTANT_G, aaa);
 	
 	return 0;
 }

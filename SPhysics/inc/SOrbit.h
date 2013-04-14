@@ -25,12 +25,14 @@ private:
     mpfr_t	epochPeriapsis;
     
     mpfr_t	trueAnomaly;
+    mpfr_t	actualTime;
     
     SVector3mp	areaVelocityNorm;
     mpfr_t		areaVelocity;
+    mpfr_t		period;
 	
 public:
-	SOrbit(const SVector3mp& Position, const SVector3mp& Velocity, const mpfr_t time, const double Masses);
+	SOrbit(const SVector3mp& Position, const SVector3mp& Velocity, const double Masses, const mpfr_t time);
 	/*SOrbit(	const SEOrbit Type, const mpfr_t& Eccentricity, 
 			const mpfr_t& SemimajorAxis, const mpfr_t& Inclination, 
 			const mpfr_t& LongitudeAscendingNode, const mpfr_t& ArgumentPeriapsis, 
@@ -70,7 +72,8 @@ public:
 	void		setAreaVelocity(const mpfr_t& AreaVelocity)						{areaVelocity = AreaVelocity;}*/
 	
 	
-	void	set(const SVector3mp& Position, const SVector3mp& Velocity, const mpfr_t time, const double Masses);
+	void	set(const SVector3mp& Position, const SVector3mp& Velocity, const double Masses, const mpfr_t time);
+	void	set(const SMassPoint& GravMass, const SMassPoint& OrbitMass, const mpfr_t time)							{set(OrbitMass.getPosition()-GravMass.getPosition(), OrbitMass.getVelocity()-GravMass.getVelocity(), OrbitMass.getMass()+GravMass.getMass(), time);}
 };
 
 
