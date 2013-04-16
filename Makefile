@@ -8,19 +8,25 @@ EXECUTABLE=Titan
 
 vpath %.cpp src
 
-all: $(EXECUTABLE) $(OBJECTS) 
+all: SMath SPhysics $(EXECUTABLE) 
 	@echo "$@ done"
 	
 print:
 	@echo "start $@:"
 	@echo "$@ done"
 	
-$(EXECUTABLE): $(OBJECTS)
+$(EXECUTABLE): $(OBJECTS) SMath/lib/libSMath.a SPhysics/lib/libSPhysics.a
 	@echo
 	@echo "start generating $@"
 	$(CC) $(LDFLAGS) $(INC) obj/$(OBJECTS) -static -lSPhysics -lSMath -lmpfr -lgmp -o bin/$@
 	@echo "$@ done"
 	@echo
+	
+SPhysics/lib/libSPhysics.a: SMath
+	$(MAKE) -C SPhysics
+
+SMath/lib/libSMath.a:
+	$(MAKE) -C SMath
 
 %.o: %.cpp $(LIBS)
 	$(CC) $(CFLAGS) $(INC) -o obj/$@ $<
@@ -28,3 +34,5 @@ $(EXECUTABLE): $(OBJECTS)
 clean:
 	rm -rf obj/*
 	rm -rf bin/*
+	$(MAKE) -C SPhysics clean
+	$(MAKE) -C SMath clean
