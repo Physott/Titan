@@ -18,7 +18,7 @@ public:
 	
 	//		double	getMass()			{return mass;}
 	const	double	getMass()	const	{return mass;}
-	const	SOrbit&	getOrbit()	const	{return *orbit;}
+	const	SOrbit*	getOrbit()	const	{return orbit;}
 	
 	//void	setMass(const double Mass)	{mass = Mass;}
 };

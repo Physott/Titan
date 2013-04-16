@@ -4,6 +4,7 @@
 
 #include <string.h>
 #include <math.h>
+#include <time.h>
 
 #include <mpfr.h>
 
@@ -15,6 +16,7 @@ extern	SMath*	gMath;
 class	SMath
 {
 private:
+
 	SMath();
 	
 public:
@@ -26,8 +28,10 @@ public:
 
 
 
+
 #include "SVector3d.h"
 #include "SVector3mp.h"
+#include "SMatrix3mp.h"
 
 
 

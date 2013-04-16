@@ -10,8 +10,7 @@ enum	SEOrbit
 {
 	SEOrbit_ELLIPTIC	= 0,
 	SEOrbit_PARABOLIC,
-	SEOrbit_HYPERBOLIC,
-	SEOrbit_NONE
+	SEOrbit_HYPERBOLIC
 };
 
 class	SOrbit
@@ -20,12 +19,12 @@ private:
 	//type
 	SEOrbit	type;
 	//Parameters
-    mpfr_t	eccentricity;				
-    mpfr_t	semimajorAxis;
-    mpfr_t	inclination;
-    mpfr_t	longitudeAscendingNode;
-    mpfr_t	argumentPeriapsis;
-    mpfr_t	epochPeriapsis;
+    mpfr_t	eccentricity;				// also Position x		
+    mpfr_t	semimajorAxis;				// also Position y		
+    mpfr_t	inclination;				// also Position z		
+    mpfr_t	longitudeAscendingNode;		// also Velocity x		
+    mpfr_t	argumentPeriapsis;			// also Velocity y		
+    mpfr_t	epochPeriapsis;				// also Velocity z		
     //actual values
     mpfr_t	actualTime;
     mpfr_t	eccentricityAnomaly;
@@ -40,7 +39,7 @@ private:
     mpfr_t		massTerm;
 	
 public:
-	SOrbit();
+	//SOrbit();
 	SOrbit(const SVector3mp& Position, const SVector3mp& Velocity, const double Masses, const mpfr_t time);
 	/*SOrbit(	const SEOrbit Type, const mpfr_t& Eccentricity, 
 			const mpfr_t& SemimajorAxis, const mpfr_t& Inclination, 
@@ -90,8 +89,10 @@ public:
 	void	set(const SVector3mp& Position, const SVector3mp& Velocity, const double Masses, const mpfr_t time);
 	void	set(const SMassPoint& GravMass, const SMassPoint& OrbitMass, const mpfr_t time)							{set(OrbitMass.getPosition()-GravMass.getPosition(), OrbitMass.getVelocity()-GravMass.getVelocity(), OrbitMass.getMass()+GravMass.getMass(), time);}
 	
+	void	move(const double timestep);
+	void	move(const double timestep, const SVector3d& Acceleration);
 	void	calcMeanMovement();
-	void	calcMeanAnomaly(mpfr_t& result, const mpfr_t& timestep);
+	void	calcMeanAnomaly(mpfr_t& result, const double timestep);
     void	calcEllipticEccentricityAnomaly(const mpfr_t& MeanAnomaly);
     void	calcHyperbolicEccentricityAnomaly(const mpfr_t& MeanAnomaly);
     void	calcEllipticRadius();
@@ -99,8 +100,8 @@ public:
     void	calcParabolicRadius();
     void	calcEllipticTrueAnomaly();
     void	calcHyperbolicTrueAnomaly();
-    void	calcParabolicTrueAnomaly(const mpfr_t& timestep);
-    void	calcPosition();
+    void	calcParabolicTrueAnomaly(const double timestep);
+    void	getPosition(SVector3mp& result);
 };
 
 

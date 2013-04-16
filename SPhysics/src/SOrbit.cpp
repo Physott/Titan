@@ -2,7 +2,7 @@
 
 
 
-
+	
 void	SOrbit::calcMeanMovement()
 {
 	mpfr_mul(meanMovement, semimajorAxis, semimajorAxis, GMP_RNDN);
@@ -11,9 +11,9 @@ void	SOrbit::calcMeanMovement()
 	mpfr_sqrt(meanMovement, meanMovement, GMP_RNDN);
 }
 
-void	SOrbit::calcMeanAnomaly(mpfr_t& result, const mpfr_t& timestep)
+void	SOrbit::calcMeanAnomaly(mpfr_t& result, const double timestep)
 {
-	mpfr_add(actualTime, actualTime, timestep, GMP_RNDN);
+	mpfr_add_d(actualTime, actualTime, timestep, GMP_RNDN);
 	mpfr_sub(result, actualTime, epochPeriapsis, GMP_RNDN);
 	mpfr_mul(result, result, meanMovement, GMP_RNDN);
 }
@@ -229,7 +229,7 @@ void	SOrbit::calcHyperbolicTrueAnomaly()
 
 	mpfr_clear(help);
 }
-void	SOrbit::calcParabolicTrueAnomaly(const mpfr_t& timestep)
+void	SOrbit::calcParabolicTrueAnomaly(const double timestep)
 {
 	mpfr_t	help;
 	mpfr_init(help);
@@ -240,7 +240,7 @@ void	SOrbit::calcParabolicTrueAnomaly(const mpfr_t& timestep)
 	mpfr_t	v;
 	mpfr_init(v);
 	
-	mpfr_add(actualTime, actualTime, timestep, GMP_RNDN);				// t	= t + dt
+	mpfr_add_d(actualTime, actualTime, timestep, GMP_RNDN);				// t	= t + dt
 	mpfr_sub(trueAnomaly, actualTime, epochPeriapsis, GMP_RNDN);		// phi	= t - t0	(phi is not the final result
 	mpfr_mul(help, areaVelocity, areaVelocity, GMP_RNDN);				// help	= k²
 	mpfr_mul(help, help, meanMovement, GMP_RNDN);						// help = k² n
@@ -269,24 +269,63 @@ void	SOrbit::calcParabolicTrueAnomaly(const mpfr_t& timestep)
 	mpfr_clear(u);
 	mpfr_clear(v);
 }
-
-void	SOrbit::calcPosition()
+void	SOrbit::getPosition(SVector3mp& result)
 {
-	//************************************************************
-	//************************************************************
-	//***********************  HIER  *****************************
-	//************************************************************
-	//************************************************************
+	mpfr_t	u;
+	mpfr_t	sinU;
+	mpfr_t	cosU;
+	mpfr_t	sinO;
+	mpfr_t	cosO;
+	mpfr_t	sinI;
+	mpfr_t	cosI;
+	
+	mpfr_init_set(u, argumentPeriapsis, GMP_RNDN);
+	mpfr_add(u, u, trueAnomaly, GMP_RNDN);
+	mpfr_init_set(sinU, u, GMP_RNDN);
+	mpfr_init_set(cosU, u, GMP_RNDN);
+	mpfr_init_set(sinO, longitudeAscendingNode, GMP_RNDN);
+	mpfr_init_set(cosO, longitudeAscendingNode, GMP_RNDN);
+	mpfr_init_set(sinI, inclination, GMP_RNDN);
+	mpfr_init_set(cosI, inclination, GMP_RNDN);
+	mpfr_sin(sinU, sinU, GMP_RNDN);
+	mpfr_sin(sinO, sinO, GMP_RNDN);
+	mpfr_sin(sinI, sinI, GMP_RNDN);
+	mpfr_cos(cosU, cosU, GMP_RNDN);
+	mpfr_cos(cosO, cosO, GMP_RNDN);
+	mpfr_cos(cosI, cosI, GMP_RNDN);
+	
+	
+	mpfr_mul(u, sinU, sinO, GMP_RNDN);
+	mpfr_mul(u, u, cosI, GMP_RNDN);
+	mpfr_mul(result.x, cosU, cosO, GMP_RNDN);
+	mpfr_sub(result.x, result.x, u, GMP_RNDN);
+	
+	mpfr_mul(u, sinU, cosO, GMP_RNDN);
+	mpfr_mul(u, u, cosI, GMP_RNDN);
+	mpfr_mul(result.y, cosU, sinO, GMP_RNDN);
+	mpfr_add(result.y, result.x, u, GMP_RNDN);
+	
+	mpfr_mul(result.z, sinU, sinI, GMP_RNDN);
+	
+	
+	mpfr_clear(u);
+	mpfr_clear(sinU);
+	mpfr_clear(cosU);
+	mpfr_clear(sinO);
+	mpfr_clear(cosO);
+	mpfr_clear(sinI);
+	mpfr_clear(cosI);
 }
 
-SOrbit::SOrbit()	: areaVelocityNorm()
+
+/*SOrbit::SOrbit()	: type(SEOrbit_NONE), areaVelocityNorm()
 {
-	mpfr_init(eccentricity);
-	mpfr_init(semimajorAxis);
-	mpfr_init(inclination);
-	mpfr_init(longitudeAscendingNode);
-	mpfr_init(argumentPeriapsis);
-	mpfr_init(epochPeriapsis);
+	mpfr_init_set_ui(eccentricity, 0, GMP_RNDN);
+	mpfr_init_set_ui(semimajorAxis, 0, GMP_RNDN);
+	mpfr_init_set_ui(inclination, 0, GMP_RNDN);
+	mpfr_init_set_ui(longitudeAscendingNode, 0, GMP_RNDN);
+	mpfr_init_set_ui(argumentPeriapsis, 0, GMP_RNDN);
+	mpfr_init_set_ui(epochPeriapsis, 0, GMP_RNDN);
 	
 	mpfr_init(actualTime);
 	mpfr_init_set_ui(eccentricityAnomaly, 0, GMP_RNDN);
@@ -297,7 +336,7 @@ SOrbit::SOrbit()	: areaVelocityNorm()
 	mpfr_init(areaVelocity);
 	mpfr_init(period);
 	mpfr_init(massTerm);
-}
+}*/
 
 SOrbit::SOrbit(const SVector3mp& Position, const SVector3mp& Velocity, const double Masses, const mpfr_t time)	: areaVelocityNorm()
 {
@@ -389,6 +428,16 @@ void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const d
 	//Position.print();
 	//Velocity.print();
 	//printf("k2: %lf\n",Masses);
+	
+	if(Masses==0)
+	{
+		mpfr_set(eccentricity, Position.x, GMP_RNDN);
+		mpfr_set(semimajorAxis, Position.y, GMP_RNDN);
+		mpfr_set(inclination, Position.z, GMP_RNDN);
+		mpfr_set(longitudeAscendingNode, Velocity.x, GMP_RNDN);
+		mpfr_set(argumentPeriapsis, Velocity.y, GMP_RNDN);
+		mpfr_set(epochPeriapsis, Velocity.z, GMP_RNDN);
+	}
 	
 	//Variables
 	mpfr_t	k2;

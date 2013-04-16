@@ -49,6 +49,7 @@ public:
 inline	bool	operator ==(const SVector3mp& v1, const SVector3mp& v2);
 inline	bool	operator !=(const SVector3mp& v1, const SVector3mp& v2);
 
+//without operator will be faster
 inline	SVector3mp	operator +(const SVector3mp& v1, const SVector3mp& v2);
 inline	SVector3mp	operator -(const SVector3mp& v1, const SVector3mp& v2);
 inline	SVector3mp	operator *(const SVector3mp& v1, const double v2);

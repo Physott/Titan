@@ -17,10 +17,17 @@ extern	SPhysics*	gPhysics;
 class	SPhysics
 {
 private:
+	mpfr_t	actualTime;
+	double	timestep;
+	
 	SPhysics();
 	
 public:
 	~SPhysics();
+	
+	const	mpfr_t&	getActualTime()	const	{return actualTime;}
+	const	double	getTimeStep()	const	{return timestep;}
+	inline	void	calcTimeStep();
 	
 	static	void	init();
 };
@@ -30,9 +37,16 @@ public:
 #include "SPhysicalObject.h"
 #include "SPhysicalObjectManager.h"
 #include "SMassPoint.h"
+#include "SGravMass.h"
 #include "SOrbit.h"
 
 
+
+void	SPhysics::calcTimeStep()
+{
+	timestep	= double(clock())/CLOCKS_PER_SEC;
+	mpfr_add_d(actualTime, actualTime, timestep, GMP_RNDN);
+}
 
 
 #endif

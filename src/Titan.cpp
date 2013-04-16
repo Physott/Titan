@@ -7,6 +7,7 @@
 int		main()
 {
 	printf("Hallo Welt\n");
+	printf("%ld\n", CLOCKS_PER_SEC);
 	
 	SMath::init();
 	gMath->init();
@@ -51,7 +52,7 @@ int		main()
 	mpfr_init(ccc);
 	SOrbit	orbit(vv1, vv2, 1000.0/CONSTANT_G, aaa);
 
-	orbit.calcMeanAnomaly(ccc, aaa);
+	orbit.calcMeanAnomaly(ccc, 1);
 	orbit.calcEllipticEccentricityAnomaly(ccc);
 	
 	
