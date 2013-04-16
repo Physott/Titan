@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-c -Wall
-LDFLAGS=-L SMath/lib -L SPhysics/lib
-INC=-I inc -I SMath/inc -I SPhysics/inc
+LDFLAGS=-L SMath/lib -L SPhysics/lib -L SSystem/lib
+INC=-I inc -I SMath/inc -I SPhysics/inc -I SSystem/inc
 SOURCES=Titan.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=Titan
@@ -15,18 +15,21 @@ print:
 	@echo "start $@:"
 	@echo "$@ done"
 	
-$(EXECUTABLE): $(OBJECTS) SMath/lib/libSMath.a SPhysics/lib/libSPhysics.a
+$(EXECUTABLE): $(OBJECTS) SSystem/lib/libSSystem.a SMath/lib/libSMath.a SPhysics/lib/libSPhysics.a
 	@echo
 	@echo "start generating $@"
-	$(CC) $(LDFLAGS) $(INC) obj/$(OBJECTS) -static -lSPhysics -lSMath -lmpfr -lgmp -o bin/$@
+	$(CC) $(LDFLAGS) $(INC) obj/$(OBJECTS) -static -lSPhysics -lSMath -lSSystem -lmpfr -lgmp -o bin/$@
 	@echo "$@ done"
 	@echo
 	
-SPhysics/lib/libSPhysics.a: SMath
+SPhysics/lib/libSPhysics.a: SMath SSystem
 	$(MAKE) -C SPhysics
 
 SMath/lib/libSMath.a:
 	$(MAKE) -C SMath
+	
+SSystem/lib/libSSystem.a:
+	$(MAKE) -C SSystem
 
 %.o: %.cpp $(LIBS)
 	$(CC) $(CFLAGS) $(INC) -o obj/$@ $<
@@ -36,3 +39,4 @@ clean:
 	rm -rf bin/*
 	$(MAKE) -C SPhysics clean
 	$(MAKE) -C SMath clean
+	$(MAKE) -C SSystem clean

@@ -2,7 +2,9 @@
 #define __SPhysics_0_00_001
 
 
+#include <time.h>
 
+#include "SSystem.h"
 #include "SMath.h"
 
 

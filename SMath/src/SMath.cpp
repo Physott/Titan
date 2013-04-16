@@ -9,7 +9,7 @@ SMath*	gMath	= 0;
 
 
 SMath::SMath()
-{
+{		
 	mpfr_set_default_prec(SMATH_PRECISION);
 }
 

@@ -9,8 +9,10 @@ int		main()
 	printf("Hallo Welt\n");
 	printf("%ld\n", CLOCKS_PER_SEC);
 	
-	SMath::init();
-	gMath->init();
+	SPhysics::init();
+	
+	SChainedList<int>	list;
+	list.add(1);
 	
 	SVector3mp	v(1.1,2.2,3.3);
 	SVector3mp	v2(v);
@@ -24,8 +26,6 @@ int		main()
 		printf("ja\n");
 	else
 		printf("nein\n");
-		
-	SPhysics::init();
 	
 	mpfr_t	test;
 	mpfr_init_set_ui(test, 1, GMP_RNDN);

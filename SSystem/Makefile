@@ -1,10 +1,10 @@
 CC=g++
 CFLAGS=-c -Wall -fPIC
-LDFLAGS=-shared -L ../SMath/lib -L ../SSystem/lib
-INC=-I inc -I ../SMath/inc -I ../SSystem/inc
-SOURCES=SPhysics.cpp SPhysicalObject.cpp SPhysicalObjectManager.cpp SOrbit.cpp
+LDFLAGS=-shared
+INC=-I inc
+SOURCES=SSystem.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
-LIB=libSPhysics.a
+LIB=libSSystem.a
 
 vpath %.cpp src
 
@@ -23,7 +23,7 @@ $(LIB): $(OBJECTS)
 	@echo
 
 %.o: %.cpp
-	$(CC) $(CFLAGS) $(LDFLAGS) $(INC) $< -static -lSSystem -lSMath -lmpfr -lgmp -o obj/$@
+	$(CC) $(CFLAGS) $(INC) $< -o obj/$@
 
 clean:
 	rm -rf obj/*

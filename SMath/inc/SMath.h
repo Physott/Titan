@@ -2,11 +2,9 @@
 #define __Math_0_00_001
 
 
-#include <string.h>
 #include <math.h>
-#include <time.h>
-
 #include <mpfr.h>
+
 
 
 class	SMath;
