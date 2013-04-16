@@ -100,6 +100,7 @@ public:
     void	calcEllipticTrueAnomaly();
     void	calcHyperbolicTrueAnomaly();
     void	calcParabolicTrueAnomaly(const mpfr_t& timestep);
+    void	calcPosition();
 };
 
 

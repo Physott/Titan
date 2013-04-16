@@ -182,6 +182,15 @@ void	SOrbit::calcHyperbolicRadius()
 	mpfr_sub_ui(radius, radius, 1, GMP_RNDN);
 	mpfr_mul(radius, radius, semimajorAxis, GMP_RNDN);
 }
+void	SOrbit::calcParabolicRadius()
+{
+	mpfr_cos(radius, trueAnomaly, GMP_RNDN);
+	mpfr_mul(radius, radius, eccentricity, GMP_RNDN);
+	mpfr_add_ui(radius, radius, 1, GMP_RNDN);
+	mpfr_mul(radius, radius, massTerm, GMP_RNDN);
+	mpfr_div(radius, areaVelocity, radius, GMP_RNDN);
+	mpfr_mul(radius, radius, areaVelocity, GMP_RNDN);
+}
 void	SOrbit::calcEllipticTrueAnomaly()
 {
 	mpfr_t	help;
@@ -224,28 +233,50 @@ void	SOrbit::calcParabolicTrueAnomaly(const mpfr_t& timestep)
 {
 	mpfr_t	help;
 	mpfr_init(help);
+	mpfr_t	D;
+	mpfr_init(D);
+	mpfr_t	u;
+	mpfr_init(u);
+	mpfr_t	v;
+	mpfr_init(v);
 	
-	mpfr_add(actualTime, actualTime, timestep, GMP_RNDN);
-	mpfr_sub(trueAnomaly, actualTime, epochPeriapsis, GMP_RNDN);
-	mpfr_mul(help, areaVelocity, areaVelocity, GMP_RNDN);
-	mpfr_mul(help, help, meanMovement, GMP_RNDN);
-	mpfr_mul(help, help, semimajorAxis, GMP_RNDN);
-	mpfr_mul(help, help, semimajorAxis, GMP_RNDN);
-	mpfr_ui_div(help, 3, help, GMP_RNDN);
-	mpfr_mul(help, help, trueAnomaly, GMP_RNDN);					//Omega halbe
-	//****************************************************************************************
-	//****************************************************************************************
-	//*********************************      HIER     ****************************************
-	//****************************************************************************************
-	//****************************************************************************************
-	/*mpfr_sqr(trueAnomaly, eccentricityAnomaly, 0.5, GMP_RNDN);
-	mpfr_tanh(trueAnomaly, trueAnomaly, GMP_RNDN);
+	mpfr_add(actualTime, actualTime, timestep, GMP_RNDN);				// t	= t + dt
+	mpfr_sub(trueAnomaly, actualTime, epochPeriapsis, GMP_RNDN);		// phi	= t - t0	(phi is not the final result
+	mpfr_mul(help, areaVelocity, areaVelocity, GMP_RNDN);				// help	= k²
+	mpfr_mul(help, help, meanMovement, GMP_RNDN);						// help = k² n
+	mpfr_mul(help, help, semimajorAxis, GMP_RNDN);						// help = k² n a
+	mpfr_mul(help, help, semimajorAxis, GMP_RNDN);						// help = k² n a²
+	mpfr_ui_div(help, 3, help, GMP_RNDN);								// help = 3/(k² n a²)
+	mpfr_mul(help, help, trueAnomaly, GMP_RNDN);						// Omega/2	= 3(t - t0)/(k² n a²)
 	
-	mpfr_mul(trueAnomaly, help, trueAnomaly, GMP_RNDN);
-	mpfr_atanh(trueAnomaly, trueAnomaly, GMP_RNDN);
-	mpfr_mul_ui(trueAnomaly, trueAnomaly, 2, GMP_RNDN);*/
+	mpfr_sqr(D, help, GMP_RNDN);
+	mpfr_add_ui(D, D, 1, GMP_RNDN);
+	
+	mpfr_sqrt(u, D, GMP_RNDN);
+	mpfr_add(u, help, u, GMP_RNDN);
+	mpfr_cbrt(u, u, GMP_RNDN);
+	
+	mpfr_sqrt(u, D, GMP_RNDN);
+	mpfr_sub(u, help, u, GMP_RNDN);
+	mpfr_cbrt(u, u, GMP_RNDN);
 
+	mpfr_add(trueAnomaly, u, v, GMP_RNDN);
+	mpfr_atan(trueAnomaly, trueAnomaly, GMP_RNDN);
+	mpfr_mul_ui(trueAnomaly, trueAnomaly, 2, GMP_RNDN);
+	
 	mpfr_clear(help);
+	mpfr_clear(D);
+	mpfr_clear(u);
+	mpfr_clear(v);
+}
+
+void	SOrbit::calcPosition()
+{
+	//************************************************************
+	//************************************************************
+	//***********************  HIER  *****************************
+	//************************************************************
+	//************************************************************
 }
 
 SOrbit::SOrbit()	: areaVelocityNorm()
