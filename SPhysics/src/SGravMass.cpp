@@ -5,5 +5,7 @@
 
 SOrbit*		SGravMass::connectOrbit(const SMassPoint& massPoint)
 {
-	return 0;
+	SOrbit*		newOrbit	= new SOrbit(this, &massPoint, gPhysics->getActualTime());
+	connectedOrbits.add(newOrbit);
+	return newOrbit;
 }

@@ -50,10 +50,10 @@ int		main()
 	mpfr_init_set_ui(aaa, 1, GMP_RNDN);
 	mpfr_init(bbb);
 	mpfr_init(ccc);
-	SOrbit	orbit(vv1, vv2, 1000.0/CONSTANT_G, aaa);
+	//SOrbit	orbit(vv1, vv2, 1000.0/CONSTANT_G, aaa);
 
-	orbit.calcMeanAnomaly(ccc, 1);
-	orbit.calcEllipticEccentricityAnomaly(ccc);
+	//orbit.calcMeanAnomaly(ccc, 1);
+	//orbit.calcEllipticEccentricityAnomaly(ccc);
 	
 	
 	

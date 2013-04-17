@@ -9,8 +9,9 @@ private:
 	SVector3mp	velocity;
 	
 public:
-	SPhysicalObject();
-	~SPhysicalObject();
+	SPhysicalObject()														:	position(), velocity()					{}
+	SPhysicalObject(const SVector3mp& Position, const SVector3mp& Velocity)	:	position(Position), velocity(Velocity)	{}
+	~SPhysicalObject()																									{}
 	
 	//		SVector3mp&		getPosition()			{return position;}
 	const	SVector3mp&		getPosition()	const	{return position;}

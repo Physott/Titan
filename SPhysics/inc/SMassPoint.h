@@ -13,7 +13,8 @@ private:
 	SOrbit*	orbit;
 
 public:
-	SMassPoint(const double Mass)	: mass(Mass), orbit(0)	{}
+	SMassPoint(const double Mass)															: SPhysicalObject(), mass(Mass), orbit(0)					{}
+	SMassPoint(const SVector3mp& Position, const SVector3mp& Velocity, const double Mass)	: SPhysicalObject(Position, Velocity), mass(Mass), orbit(0)	{}
 	~SMassPoint()											{}
 	
 	//		double	getMass()			{return mass;}

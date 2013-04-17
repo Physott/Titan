@@ -37,10 +37,13 @@ private:
     mpfr_t		period;
     //constant
     mpfr_t		massTerm;
+    
+    SMassPoint*	orbitMass;
+    SGravMass*	gravMass;
 	
 public:
 	//SOrbit();
-	SOrbit(const SVector3mp& Position, const SVector3mp& Velocity, const double Masses, const mpfr_t time);
+	SOrbit(SGravMass& GravMass, SMassPoint& OrbitMass, const mpfr_t time);
 	/*SOrbit(	const SEOrbit Type, const mpfr_t& Eccentricity, 
 			const mpfr_t& SemimajorAxis, const mpfr_t& Inclination, 
 			const mpfr_t& LongitudeAscendingNode, const mpfr_t& ArgumentPeriapsis, 
@@ -74,6 +77,10 @@ public:
 	const	mpfr_t&		getAreaVelocity()			const	{return areaVelocity;}
 	const	mpfr_t&		getPeriod()					const	{return period;}
 	const	mpfr_t&		getMassTerm()				const	{return massTerm;}
+	//		SorbitMass*	getorbitMass()						{return orbitMass;}
+	const	SMassPoint*	getOrbitMass()				const	{return orbitMass;}
+	//		SGravMass*	getGravMass()						{return gravMass;}
+	const	SGravMass*	getGravMass()				const	{return gravMass;}
 	/*void		setType(const SEOrbit Type)										{type = Type;}
 	void		setEccentricity(const mpfr_t& Eccentricity)						{eccentricity = Eccentricity;}
 	void		setSemimajorAxis(const mpfr_t& SemimajorAxis)					{semimajorAxis = SemimajorAxis;}
@@ -84,10 +91,12 @@ public:
 	void		setTrueAnomaly(const mpfr_t& TrueAnomaly)						{trueAnomaly = TrueAnomaly;}
 	void		setAreaVelocityNorm(const mpfr_t& AreaVelocityNorm)				{areaVelocityNorm = AreaVelocityNorm;}
 	void		setAreaVelocity(const mpfr_t& AreaVelocity)						{areaVelocity = AreaVelocity;}*/
+	//SorbitMass*	getorbitMass(const SorbitMass* orbitMass)						{orbitMass = orbitMass;}
+	//SGravMass*	getGravMass(const SGravMass* GravMass)							{gravMass = GravMass;}
 	
 	
 	void	set(const SVector3mp& Position, const SVector3mp& Velocity, const double Masses, const mpfr_t time);
-	void	set(const SMassPoint& GravMass, const SMassPoint& OrbitMass, const mpfr_t time)							{set(OrbitMass.getPosition()-GravMass.getPosition(), OrbitMass.getVelocity()-GravMass.getVelocity(), OrbitMass.getMass()+GravMass.getMass(), time);}
+	void	set(SGravMass& GravMass, SMassPoint& OrbitMass, const mpfr_t time)							{gravMass = &GravMass; orbitMass = &OrbitMass; set(OrbitMass.getPosition()-GravMass.getPosition(), OrbitMass.getVelocity()-GravMass.getVelocity(), OrbitMass.getMass()+GravMass.getMass(), time);}
 	
 	void	move(const double timestep);
 	void	move(const double timestep, const SVector3d& Acceleration);

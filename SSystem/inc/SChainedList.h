@@ -64,11 +64,14 @@ void	SChainedList<T>::add(const T value)
 							newEntry->data		= value;
 							newEntry->nextEntry	= 0;
 	
+	nEntries++;
+	
 	if(nEntries)
 	{
 		newEntry->previousEntry	= last;
 		last->nextEntry			= newEntry;
 		last					= newEntry;
+		return;
 	}
 	
 	newEntry->previousEntry	= 0;
@@ -81,6 +84,9 @@ void	SChainedList<T>::remove(const T value)
 {
 	SChainedListEntry<T>*	entry	= find(value);
 	
+	if(!entry)
+		return;
+	
 	if(entry->previousEntry)
 		entry->previousEntry->nextEntry	= entry->nextEntry;
 	else
@@ -91,6 +97,7 @@ void	SChainedList<T>::remove(const T value)
 		last	= entry->previousEntry;
 		
 	delete	entry;
+	nEntries--;
 }
 
 

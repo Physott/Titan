@@ -338,7 +338,7 @@ void	SOrbit::getPosition(SVector3mp& result)
 	mpfr_init(massTerm);
 }*/
 
-SOrbit::SOrbit(const SVector3mp& Position, const SVector3mp& Velocity, const double Masses, const mpfr_t time)	: areaVelocityNorm()
+SOrbit::SOrbit(SGravMass& GravMass, SMassPoint& OrbitMass, const mpfr_t time)	: areaVelocityNorm()
 {
 	mpfr_init(eccentricity);
 	mpfr_init(semimajorAxis);
@@ -357,7 +357,7 @@ SOrbit::SOrbit(const SVector3mp& Position, const SVector3mp& Velocity, const dou
 	mpfr_init(period);
 	mpfr_init(massTerm);
 	
-	set(Position, Velocity, Masses, time);
+	set(GravMass, OrbitMass, time);
 }
 
 /*SOrbit::SOrbit(	const SEOrbit Type, 
@@ -723,3 +723,5 @@ void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const d
 	mpfr_clear(tanW2);
 	mpfr_clear(M);
 }
+
+

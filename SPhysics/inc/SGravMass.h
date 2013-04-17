@@ -11,11 +11,11 @@ class SOrbit;
 class	SGravMass : public SMassPoint
 {
 private:
-	int			nConnectedOrbits;
-	SOrbit*		connectedOrbits[SGRAVMASS_MAX_CONNECTEDORBITS];
+	SChainedList<SOrbit*>	connectedOrbits;
 
 public:
-	SGravMass(const double Mass)	: SMassPoint(Mass), nConnectedOrbits(0)	{}
+	SGravMass(const double Mass)															: SMassPoint(Mass)						{}
+	SGravMass(const SVector3mp& Position, const SVector3mp& Velocity, const double Mass)	: SMassPoint(Position, Velocity, Mass)	{}
 	~SGravMass()															{}
 	
 	SOrbit*	connectOrbit(const SMassPoint& massPoint);
