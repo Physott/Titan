@@ -56,7 +56,7 @@ private:
 	
 public:
 	//SOrbit();
-	SOrbit(SGravMass& GravMass, SMassPoint& OrbitMass, const mpfr_t time);
+	SOrbit(SGravMass& GravMass, SMassPoint& OrbitMass);
 	/*SOrbit(	const SEOrbit Type, const mpfr_t& Eccentricity, 
 			const mpfr_t& SemimajorAxis, const mpfr_t& Inclination, 
 			const mpfr_t& LongitudeAscendingNode, const mpfr_t& ArgumentPeriapsis, 
@@ -107,11 +107,14 @@ public:
 	//SGravMass*	getGravMass(const SGravMass* GravMass)							{gravMass = GravMass;}
 	
 	
-	void	set(const SVector3mp& Position, const SVector3mp& Velocity, const double Masses);
-	void	set(SGravMass& GravMass, SMassPoint& OrbitMass)							{gravMass = &GravMass; orbitMass = &OrbitMass; set(OrbitMass.getPosition()-GravMass.getPosition(), OrbitMass.getVelocity()-GravMass.getVelocity(), OrbitMass.getMass()+GravMass.getMass());}
+	void	set(const SVector3mp& Position, const SVector3mp& Velocity, const double Mass1, const double Mass2);
+	void	set(SGravMass& GravMass, SMassPoint& OrbitMass)							{gravMass = &GravMass; orbitMass = &OrbitMass; set(OrbitMass.getPosition()-GravMass.getPosition(), OrbitMass.getVelocity()-GravMass.getVelocity(), OrbitMass.getMass(), GravMass.getMass());}
 	
 	void	move(const double timestep);
 	//void	move(const double timestep, const SVector3d& Acceleration);
+	
+	void	print()		const;
+	void	printRaw()	const;
 };
 
 

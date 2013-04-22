@@ -336,7 +336,7 @@ void	SOrbit::getPosition(SVector3mp& result)
 	mpfr_init(massTerm);
 }*/
 
-SOrbit::SOrbit(SGravMass& GravMass, SMassPoint& OrbitMass, const mpfr_t time)	: areaVelocityNorm()
+SOrbit::SOrbit(SGravMass& GravMass, SMassPoint& OrbitMass)	: areaVelocityNorm()
 {
 	mpfr_init(eccentricity);
 	mpfr_init(semimajorAxis);
@@ -418,13 +418,13 @@ SOrbit::~SOrbit()
 
 
 
-void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const double Masses)
+void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const double Mass1, const double Mass2)
 {
 	//Position.print();
 	//Velocity.print();
 	//printf("k2: %lf\n",Masses);
 	
-	if(Masses==0)
+	/*if(Masses==0)
 	{
 		mpfr_set(eccentricity, Position.x, GMP_RNDN);
 		mpfr_set(semimajorAxis, Position.y, GMP_RNDN);
@@ -432,7 +432,9 @@ void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const d
 		mpfr_set(longitudeAscendingNode, Velocity.x, GMP_RNDN);
 		mpfr_set(argumentPeriapsis, Velocity.y, GMP_RNDN);
 		mpfr_set(epochPeriapsis, Velocity.z, GMP_RNDN);
-	}
+	}*/
+	
+	Position.Mag(radius);
 	
 	//Variables
 	mpfr_t	k2;
@@ -481,13 +483,14 @@ void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const d
 	Position.Mag(r);																// r	= |vr|
 	mpfr_ui_div(reziprokSemimajorAxis, 2, r, GMP_RNDN);								// 1/a	= 2/r	(1/a is not complete result)
 	Velocity.Mag2(eccentricity);													// e	= |vr|²	(e is not complete result) (e is only buffer)
-	double con	= CONSTANT_G * Masses;												// con	= G(M+m) (local constant)
-	mpfr_div_d(eccentricity, eccentricity, con, GMP_RNDN);							// e	= |vr|²/G(M+m) (e is not complete result) (e is only buffer)
+	mpfr_set_d(massTerm, CONSTANT_G * Mass1, GMP_RNDN);								// massTerm	= GM (massTerm is not complete result)
+	mpfr_add_d(massTerm, massTerm, CONSTANT_G * Mass2, GMP_RNDN);					// massTerm	= G(M+m)
+	mpfr_div(eccentricity, eccentricity, massTerm, GMP_RNDN);						// e	= |vr|²/G(M+m) (e is not complete result) (e is only buffer)
 	mpfr_sub(reziprokSemimajorAxis, reziprokSemimajorAxis, eccentricity, GMP_RNDN);	// 1/a	= 2/r - |vr|²/G(M+m)
 	//printf("ReziprokSemimajorAxis: %lf\n",mpfr_get_d(reziprokSemimajorAxis, GMP_RNDN));
 	
 	//eccentricity
-	mpfr_div_d(eccentricity, k2, con, GMP_RNDN);								// e	= k²/G(M+m) = p (e is not complete result)
+	mpfr_div(eccentricity, k2, massTerm, GMP_RNDN);								// e	= k²/G(M+m) = p (e is not complete result)
 	mpfr_mul(eccentricity, eccentricity, reziprokSemimajorAxis, GMP_RNDN);		// e	= p/a (e is not complete result)
 	mpfr_ui_sub(eccentricity, 1, eccentricity, GMP_RNDN);						// e	= 1 - p/a (e is not complete result)
 	mpfr_sqrt(eccentricity, eccentricity, GMP_RNDN);							// e	= sqrt(1 - p/a)
@@ -531,7 +534,7 @@ void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const d
 		//printf("elliptic\n");
 		
 		//sinE
-		mpfr_mul_d(sinE, semimajorAxis, con, GMP_RNDN);						// sin(E)	= a G(M+m) (E is not complete result) 
+		mpfr_mul(sinE, semimajorAxis, massTerm, GMP_RNDN);					// sin(E)	= a G(M+m) (E is not complete result) 
 		mpfr_sqrt(sinE, sinE, GMP_RNDN);									// sin(E)	= sqrt(a G(M+m)) (E is not complete result) 
 		mpfr_mul(sinE, sinE, eccentricity, GMP_RNDN);						// sin(E)	= e sqrt(a G(M+m)) (E is not complete result)
 		dot(epochPeriapsis, Position, Velocity);							// M		= vr.vv (M is not complete result) (M is only buffer)
@@ -588,7 +591,7 @@ void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const d
 		
 		mpfr_mul(meanMovement, reziprokSemimajorAxis, reziprokSemimajorAxis, GMP_RNDN);	// n	= 1/a²	(n is not complete result) 
 		mpfr_mul(meanMovement, meanMovement, reziprokSemimajorAxis, GMP_RNDN);			// n	= 1/a³	(n is not complete result) 
-		mpfr_mul_d(meanMovement, meanMovement, con, GMP_RNDN);							// n	= G(M+m)/a³	(n is not complete result) 
+		mpfr_mul(meanMovement, meanMovement, massTerm, GMP_RNDN);						// n	= G(M+m)/a³	(n is not complete result) 
 		mpfr_sqrt(meanMovement, meanMovement, GMP_RNDN);								// n	= sqrt(G(M+m)/a³)
 		//mpfr_printf ("n: %.128RNf\n", period);
 		
@@ -609,7 +612,7 @@ void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const d
 		
 		//sinE
 		mpfr_abs(sinE, semimajorAxis, GMP_RNDN);							// sinh(E)	= |a|  (E is not complete result) 
-		mpfr_mul_d(sinE, sinE, con, GMP_RNDN);								// sinh(E)	= |a| G(M+m) (E is not complete result) 
+		mpfr_mul(sinE, sinE, massTerm, GMP_RNDN);							// sinh(E)	= |a| G(M+m) (E is not complete result) 
 		mpfr_sqrt(sinE, sinE, GMP_RNDN);									// sinh(E)	= sqrt(|a| G(M+m)) (E is not complete result) 
 		mpfr_mul(sinE, sinE, eccentricity, GMP_RNDN);						// sinh(E)	= e sqrt(|a| G(M+m)) (E is not complete result)
 		dot(epochPeriapsis, Position, Velocity);							// M		= vr.vv (M is not complete result) (M is only buffer)
@@ -641,7 +644,7 @@ void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const d
 		
 		mpfr_mul(meanMovement, reziprokSemimajorAxis, reziprokSemimajorAxis, GMP_RNDN);		// n	= 1/a²	(n is not complete result) 
 		mpfr_mul(meanMovement, meanMovement, reziprokSemimajorAxis, GMP_RNDN);				// n	= 1/a³	(n is not complete result) 
-		mpfr_mul_d(meanMovement, meanMovement, con, GMP_RNDN);								// n	= G(M+m)/a³	(n is not complete result) 
+		mpfr_mul(meanMovement, meanMovement, massTerm, GMP_RNDN);							// n	= G(M+m)/a³	(n is not complete result) 
 		mpfr_sqrt(meanMovement, meanMovement, GMP_RNDN);									// n	= sqrt(G(M+m)/a³)
 		//mpfr_printf ("n: %.128RNf\n", n);
 		
@@ -657,13 +660,14 @@ void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const d
 		//type
 		type	= SEOrbit_PARABOLIC;
 		mpfr_add_ui(semimajorAxis, eccentricity, 1, GMP_RNDN);				// q	= e + 1
-		mpfr_div_d(sinE, k2, con, GMP_RNDN);								// p	= k²/(G(M+m))
+		mpfr_div(sinE, k2, massTerm, GMP_RNDN);								// p	= k²/(G(M+m))
 		mpfr_div(semimajorAxis, sinE, semimajorAxis, GMP_RNDN);				// q	= p/(e + 1)
 		//mpfr_printf ("semimajorAxis: %.128RNf\n", semimajorAxis);
 		printf("parabolic\n");
 		
 		//tanW2
-		mpfr_mul_d(tanW2, semimajorAxis, 2*con, GMP_RNDN);					// tan(W/2)	= 2 q G(M+m) (E is not complete result) 
+		mpfr_mul(tanW2, semimajorAxis, massTerm, GMP_RNDN);					// tan(W/2)	= q G(M+m) (E is not complete result) 
+		mpfr_mul_d(tanW2, tanW2, 2, GMP_RNDN);								// tan(W/2)	= 2 q G(M+m) (E is not complete result) 
 		mpfr_sqrt(tanW2, tanW2, GMP_RNDN);									// tan(W/2)	= sqrt(2 q G(M+m)) (E is not complete result) 
 		dot(epochPeriapsis, Position, Velocity);							// M		= vr.vv (M is not complete result) (M is only buffer)
 		mpfr_div(tanW2, epochPeriapsis, sinE, GMP_RNDN);					// tan(W/2)	= vr.vv / sqrt(2 q G(M+m))
@@ -680,7 +684,8 @@ void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const d
 		{
 			mpfr_mul(M, semimajorAxis, semimajorAxis, GMP_RNDN);				// M	= q²	(M is not complete result) 
 			mpfr_mul(M, M, semimajorAxis, GMP_RNDN);							// M	= q³	(M is not complete result) 
-			mpfr_mul_d(M, M, 2/con, GMP_RNDN);									// M	= 2q³/(G(M+m))	(M is not complete result) 
+			mpfr_mul_d(M, M, 2, GMP_RNDN);										// M	= 2q³	(M is not complete result) 
+			mpfr_div(M, M, massTerm, GMP_RNDN);									// M	= 2q³/(G(M+m))	(M is not complete result) 
 			mpfr_sqrt(M, M, GMP_RNDN);											// M	= sqrt(2q³/(G(M+m)))	(M is not complete result) 
 			mpfr_mul(meanMovement, tanW2, tanW2, GMP_RNDN);						// n	= tan²(W/2)	(n is not complete result) 
 			mpfr_mul(meanMovement, meanMovement, tanW2, GMP_RNDN);				// n	= tan³(W/2)	(n is not complete result) 
@@ -693,7 +698,8 @@ void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const d
 		{
 			mpfr_mul(M, r, r, GMP_RNDN);										// M	= r²	(M is not complete result) 
 			mpfr_mul(M, M, r, GMP_RNDN);										// M	= r³	(M is not complete result) 
-			mpfr_mul_d(M, M, 2/(9*con), GMP_RNDN);								// M	= 2r³/(9G(M+m))	(M is not complete result) 
+			mpfr_mul_d(M, M, 2/9, GMP_RNDN);									// M	= 2r³/9)	(M is not complete result) 
+			mpfr_div(M, M, massTerm, GMP_RNDN);									// M	= 2r³/(9G(M+m))	(M is not complete result) 
 			mpfr_sqrt(M, M, GMP_RNDN);											// M	= sqrt(2r³/(9G(M+m)))	(M is not complete result) 
 			if((Position*Velocity)<0)
 				mpfr_sub(epochPeriapsis, gPhysics->getActualTime(), M, GMP_RNDN);						// t	= time - sqrt(2q³/(G(M+m)))(1/3)tan³(W/2) + tan(W/2)
@@ -724,3 +730,61 @@ void	SOrbit::move(const double timestep)
 }
 
 
+void	SOrbit::print()	const
+{
+	printf("SOrbit:			%s around %s ", orbitMass->getName(), gravMass->getName());
+	switch(type)
+	{
+	case SEOrbit_ELLIPTIC:
+		printf("with type ELLIPTIC\n");
+		break;
+	case SEOrbit_PARABOLIC:
+		printf("with type PARABOLIC\n");
+		break;
+	case SEOrbit_HYPERBOLIC:
+		printf("with type HYPERBOLIC\n");
+	}
+	mpfr_printf ("  eccentricity			%.32RNf\n", eccentricity, GMP_RNDN);
+	mpfr_printf ("  semimajorAxis			%.32RNf\n", semimajorAxis, GMP_RNDN);
+	mpfr_printf ("  inclination				%.32RNf\n", inclination, GMP_RNDN);
+	mpfr_printf ("  longitudeAscendingNode	%.32RNf\n", longitudeAscendingNode, GMP_RNDN);
+	mpfr_printf ("  argumentPeriapsis		%.32RNf\n", argumentPeriapsis, GMP_RNDN);
+	mpfr_printf ("  epochPeriapsis			%.32RNf\n", epochPeriapsis, GMP_RNDN);
+	mpfr_printf ("  eccentricityAnomaly		%.32RNf\n", eccentricityAnomaly, GMP_RNDN);
+	mpfr_printf ("  trueAnomaly				%.32RNf\n", trueAnomaly, GMP_RNDN);
+	mpfr_printf ("  radius					%.32RNf\n", radius, GMP_RNDN);
+	mpfr_printf ("  meanMovement			%.32RNf\n", meanMovement, GMP_RNDN);
+	mpfr_printf ("  areaVelocityNorm		"); areaVelocityNorm.printRaw();
+	mpfr_printf ("  areaVelocity			%.32RNf\n", areaVelocity, GMP_RNDN);
+	mpfr_printf ("  period					%.32RNf\n", period, GMP_RNDN);
+	mpfr_printf ("  massTerm				%.32RNf\n", massTerm, GMP_RNDN);
+}
+void	SOrbit::printRaw()	const
+{
+	printf("  SOrbit:			%s around %s ", orbitMass->getName(), gravMass->getName());
+	switch(type)
+	{
+	case SEOrbit_ELLIPTIC:
+		printf("with type ELLIPTIC\n");
+		break;
+	case SEOrbit_PARABOLIC:
+		printf("with type PARABOLIC\n");
+		break;
+	case SEOrbit_HYPERBOLIC:
+		printf("with type HYPERBOLIC\n");
+	}
+	mpfr_printf ("    eccentricity				%.32RNf\n", eccentricity, GMP_RNDN);
+	mpfr_printf ("    semimajorAxis				%.32RNf\n", semimajorAxis, GMP_RNDN);
+	mpfr_printf ("    inclination				%.32RNf\n", inclination, GMP_RNDN);
+	mpfr_printf ("    longitudeAscendingNode	%.32RNf\n", longitudeAscendingNode, GMP_RNDN);
+	mpfr_printf ("    argumentPeriapsis			%.32RNf\n", argumentPeriapsis, GMP_RNDN);
+	mpfr_printf ("    epochPeriapsis			%.32RNf\n", epochPeriapsis, GMP_RNDN);
+	mpfr_printf ("    eccentricityAnomaly		%.32RNf\n", eccentricityAnomaly, GMP_RNDN);
+	mpfr_printf ("    trueAnomaly				%.32RNf\n", trueAnomaly, GMP_RNDN);
+	mpfr_printf ("    radius					%.32RNf\n", radius, GMP_RNDN);
+	mpfr_printf ("    meanMovement				%.32RNf\n", meanMovement, GMP_RNDN);
+	mpfr_printf ("    areaVelocityNorm			"); areaVelocityNorm.printRaw();
+	mpfr_printf ("    areaVelocity				%.32RNf\n", areaVelocity, GMP_RNDN);
+	mpfr_printf ("    period					%.32RNf\n", period, GMP_RNDN);
+	mpfr_printf ("    massTerm					%.32RNf\n", massTerm, GMP_RNDN);
+}

@@ -14,11 +14,13 @@ private:
 	SChainedList<SOrbit*>	connectedOrbits;
 
 public:
-	SGravMass(const double Mass)															: SMassPoint(Mass)						{}
-	SGravMass(const SVector3mp& Position, const SVector3mp& Velocity, const double Mass)	: SMassPoint(Position, Velocity, Mass)	{}
+	SGravMass(const char* Name, const double Mass)															: SMassPoint(Name, Mass)						{}
+	SGravMass(const char* Name, const double Mass, const SVector3mp& Position, const SVector3mp& Velocity)	: SMassPoint(Name, Mass, Position, Velocity)	{}
 	~SGravMass()															{}
 	
-	SOrbit*	connectOrbit(const SMassPoint& massPoint);
+	SOrbit*	connectOrbit(SMassPoint& massPoint);
+	
+	void	print(bool withOrbits=false);
 };
 
 

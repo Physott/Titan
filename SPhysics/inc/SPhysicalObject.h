@@ -4,7 +4,7 @@
 
 class	SPhysicalObject
 {
-private:
+protected:
 	SVector3mp	position;
 	SVector3mp	velocity;
 	

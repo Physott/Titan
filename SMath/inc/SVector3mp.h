@@ -9,7 +9,7 @@ public:
 	mpfr_t	y;
 	mpfr_t	z;
 
-	SVector3mp()														{mpfr_init(x); mpfr_init(y); mpfr_init(z);}
+	SVector3mp()														{mpfr_init_set_ui(x, 0, GMP_RNDN); mpfr_init_set_ui(y, 0, GMP_RNDN); mpfr_init_set_ui(z, 0, GMP_RNDN);}
 	SVector3mp(const double xx, const double yy, const double zz)		{mpfr_init_set_d(x, xx, GMP_RNDN); mpfr_init_set_d(y, yy, GMP_RNDN); mpfr_init_set_d(z, zz, GMP_RNDN);}
 	SVector3mp(const mpfr_t& xx, const mpfr_t& yy, const mpfr_t& zz)	{mpfr_init_set(x, xx, GMP_RNDN); mpfr_init_set(y, yy, GMP_RNDN); mpfr_init_set(z, zz, GMP_RNDN);}
 	SVector3mp(const SVector3d& v)										{mpfr_init_set_d(x, v.x, GMP_RNDN); mpfr_init_set_d(y, v.y, GMP_RNDN); mpfr_init_set_d(z, v.z, GMP_RNDN);}
@@ -36,7 +36,9 @@ public:
 
 	void	clear()	{mpfr_set_ui(x,0, GMP_RNDN); mpfr_set_ui(y,0, GMP_RNDN); mpfr_set_ui(z,0, GMP_RNDN);}
 
-	void	print()		const		{printf("SVector3mp: %lf   %lf   %lf\n", mpfr_get_d(x, GMP_RNDN), mpfr_get_d(y, GMP_RNDN), mpfr_get_d(z, GMP_RNDN));}
+	//void	print()		const		{printf("SVector3mp: %lf   %lf   %lf\n", mpfr_get_d(x, GMP_RNDN), mpfr_get_d(y, GMP_RNDN), mpfr_get_d(z, GMP_RNDN));}
+	void	print()		const		{mpfr_printf ("SVector3mp: %.32RNf %.32RNf %.32RNf\n", x, y, z, GMP_RNDN);}
+	void	printRaw()	const		{mpfr_printf ("%.32RNf %.32RNf %.32RNf\n", x, y, z, GMP_RNDN);}
 
 	friend	bool	operator ==(const SVector3mp& v1, const SVector3mp& v2);
 	friend	bool	operator !=(const SVector3mp& v1, const SVector3mp& v2);

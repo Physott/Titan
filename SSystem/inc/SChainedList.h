@@ -18,16 +18,22 @@ private:
 	unsigned	int			nEntries;
 	SChainedListEntry<T>*	first;
 	SChainedListEntry<T>*	last;
+	SChainedListEntry<T>*	cursor;
 	
 	SChainedListEntry<T>*	find(const T value);
 	
 public:
-	SChainedList()					:	nEntries(0), first(0), last(0)	{}
-	SChainedList(const T value)		:	nEntries(0), first(0), last(0)	{add(value);}
+	SChainedList()					:	nEntries(0), first(0), last(0), cursor(0)	{}
+	SChainedList(const T value)		:	nEntries(0), first(0), last(0), cursor(0)	{add(value);}
 	~SChainedList();
+	
+	const	unsigned	int		getNEntries()	const	{return nEntries;}
 	
 	void	add(const T value);
 	void	remove(const T value);
+	
+	T		initCursor()	{cursor=first; return cursor->data;}
+	T		next()			{cursor=cursor->nextEntry; return cursor->data;}
 };
 
 
@@ -64,24 +70,21 @@ void	SChainedList<T>::add(const T value)
 							newEntry->data		= value;
 							newEntry->nextEntry	= 0;
 	
-	printf("Point 3\n");
 	
 	nEntries++;
 	
 	if(nEntries>1)
 	{
-		printf("Point 4\n");
 		newEntry->previousEntry	= last;
 		last->nextEntry			= newEntry;
 		last					= newEntry;
 		return;
 	}
 	
-	printf("Point 5\n");
-	
 	newEntry->previousEntry	= 0;
 	first					= newEntry;
 	last					= newEntry;
+	cursor					= newEntry;
 }
 
 template <class T>
