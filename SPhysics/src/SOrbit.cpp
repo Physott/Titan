@@ -11,7 +11,7 @@ void	SOrbit::calcMeanMovement()
 	mpfr_sqrt(meanMovement, meanMovement, GMP_RNDN);
 }
 
-void	SOrbit::calcMeanAnomaly(mpfr_t& result, const double timestep)
+void	SOrbit::calcMeanAnomaly(mpfr_t& result)
 {
 	mpfr_sub(result, gPhysics->getActualTime(), epochPeriapsis, GMP_RNDN);
 	mpfr_mul(result, result, meanMovement, GMP_RNDN);
@@ -228,7 +228,7 @@ void	SOrbit::calcHyperbolicTrueAnomaly()
 
 	mpfr_clear(help);
 }
-void	SOrbit::calcParabolicTrueAnomaly(const double timestep)
+void	SOrbit::calcParabolicTrueAnomaly()
 {
 	mpfr_t	help;
 	mpfr_init(help);
@@ -297,13 +297,16 @@ void	SOrbit::getPosition(SVector3mp& result)
 	mpfr_mul(u, u, cosI, GMP_RNDN);
 	mpfr_mul(result.x, cosU, cosO, GMP_RNDN);
 	mpfr_sub(result.x, result.x, u, GMP_RNDN);
+	mpfr_mul(result.x, result.x, radius, GMP_RNDN);
 	
 	mpfr_mul(u, sinU, cosO, GMP_RNDN);
 	mpfr_mul(u, u, cosI, GMP_RNDN);
 	mpfr_mul(result.y, cosU, sinO, GMP_RNDN);
 	mpfr_add(result.y, result.y, u, GMP_RNDN);
+	mpfr_mul(result.y, result.y, radius, GMP_RNDN);
 	
 	mpfr_mul(result.z, sinU, sinI, GMP_RNDN);
+	mpfr_mul(result.z, result.z, radius, GMP_RNDN);
 	
 	
 	mpfr_clear(u);
@@ -726,7 +729,30 @@ void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const d
 
 void	SOrbit::move(const double timestep)
 {
+	mpfr_t	meanAnomaly;
+	mpfr_init(meanAnomaly);
 	
+	switch(type)
+	{
+	case SEOrbit_ELLIPTIC:
+		calcMeanAnomaly(meanAnomaly);
+		calcEllipticEccentricityAnomaly(meanAnomaly);
+		calcEllipticTrueAnomaly();
+		calcEllipticRadius();
+		break;
+	case SEOrbit_PARABOLIC:
+		calcParabolicTrueAnomaly();
+		calcParabolicRadius();
+		break;
+	case SEOrbit_HYPERBOLIC:
+		calcMeanAnomaly(meanAnomaly);
+		calcHyperbolicEccentricityAnomaly(meanAnomaly);
+		calcHyperbolicTrueAnomaly();
+		calcHyperbolicRadius();
+	}
+	getPosition(orbitMass->position);
+	
+	mpfr_clear(meanAnomaly);
 }
 
 

@@ -27,6 +27,9 @@ public:
 	
 	void	print()		const;
 	void	printRaw()	const;
+	
+	friend	class	SGravMass;
+	friend	class	SOrbit;
 };
 
 

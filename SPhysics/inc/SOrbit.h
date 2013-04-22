@@ -42,7 +42,7 @@ private:
     SGravMass*	gravMass;
     
     void	calcMeanMovement();
-	void	calcMeanAnomaly(mpfr_t& result, const double timestep);
+	void	calcMeanAnomaly(mpfr_t& result);
     void	calcEllipticEccentricityAnomaly(const mpfr_t& MeanAnomaly);
     void	calcHyperbolicEccentricityAnomaly(const mpfr_t& MeanAnomaly);
     void	calcEllipticRadius();
@@ -50,7 +50,7 @@ private:
     void	calcParabolicRadius();
     void	calcEllipticTrueAnomaly();
     void	calcHyperbolicTrueAnomaly();
-    void	calcParabolicTrueAnomaly(const double timestep);
+    void	calcParabolicTrueAnomaly();
     void	getPosition(SVector3mp& result);
 
 	

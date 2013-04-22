@@ -28,5 +28,18 @@ int		main()
 	
 	earth.print(true);
 	
+	gPhysics->printTime();
+	//printf("Hallo Welt\n");
+	ship1.print();
+	gPhysics->calcTimeStep();
+	for(int i=0; i<10; i++)
+	{
+		ship1.move(gPhysics->getTimeStep());
+		ship2.move(gPhysics->getTimeStep());
+		ship1.print();
+		gPhysics->calcTimeStep();
+	}
+	printf("Hallo Welt\n");
+	
 	return 0;
 }

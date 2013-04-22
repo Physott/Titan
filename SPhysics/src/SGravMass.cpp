@@ -7,6 +7,7 @@ SOrbit*		SGravMass::connectOrbit(SMassPoint& massPoint)
 {
 	SOrbit*		newOrbit	= new SOrbit(*this, massPoint);
 	connectedOrbits.add(newOrbit);
+	massPoint.orbit			= newOrbit;
 	return newOrbit;
 }
 
@@ -24,7 +25,7 @@ void	SGravMass::print(bool withOrbits)
 		if(withOrbits)
 		{
 			connectedOrbits.initCursor()->printRaw();
-			for(unsigned int i=0; i<connectedOrbits.getNEntries(); i++)
+			for(unsigned int i=1; i<connectedOrbits.getNEntries(); i++)
 				connectedOrbits.next()->printRaw();
 		}
 	}
