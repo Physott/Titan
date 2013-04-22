@@ -21,6 +21,9 @@ public:
 	const	double	getMass()	const	{return mass;}
 	const	SOrbit*	getOrbit()	const	{return orbit;}
 	
+	//const	SVector3mp&		getPosition()	const	{if(orbit) return position; return position;}
+	//const	SVector3mp&		getVelocity()	const	{return velocity;}
+	
 	//void	setMass(const double Mass)	{mass = Mass;}
 };
 

@@ -22,6 +22,17 @@ SMath::~SMath()
 
 void	SMath::init()
 {
-	if(!gMath)
+	if(gMath)
+	{
+		printf("SMath reinitialisation");
+		delete	gMath;
+		printf("  >>>  delete successful");
 		gMath	= new SMath();
+		printf("  >>>  reinitialisation successful\n");
+		return;
+	}
+	
+	printf("SMath initialisation");
+	gMath	= new SMath();
+	printf("  >>>  initialisation successful\n");
 }

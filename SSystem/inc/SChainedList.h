@@ -15,7 +15,7 @@ template <class T>
 class	SChainedList
 {
 private:
-	int						nEntries;
+	unsigned	int			nEntries;
 	SChainedListEntry<T>*	first;
 	SChainedListEntry<T>*	last;
 	
@@ -64,15 +64,20 @@ void	SChainedList<T>::add(const T value)
 							newEntry->data		= value;
 							newEntry->nextEntry	= 0;
 	
+	printf("Point 3\n");
+	
 	nEntries++;
 	
-	if(nEntries)
+	if(nEntries>1)
 	{
+		printf("Point 4\n");
 		newEntry->previousEntry	= last;
 		last->nextEntry			= newEntry;
 		last					= newEntry;
 		return;
 	}
+	
+	printf("Point 5\n");
 	
 	newEntry->previousEntry	= 0;
 	first					= newEntry;

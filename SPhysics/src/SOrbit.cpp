@@ -13,8 +13,7 @@ void	SOrbit::calcMeanMovement()
 
 void	SOrbit::calcMeanAnomaly(mpfr_t& result, const double timestep)
 {
-	mpfr_add_d(actualTime, actualTime, timestep, GMP_RNDN);
-	mpfr_sub(result, actualTime, epochPeriapsis, GMP_RNDN);
+	mpfr_sub(result, gPhysics->getActualTime(), epochPeriapsis, GMP_RNDN);
 	mpfr_mul(result, result, meanMovement, GMP_RNDN);
 }
 
@@ -240,8 +239,7 @@ void	SOrbit::calcParabolicTrueAnomaly(const double timestep)
 	mpfr_t	v;
 	mpfr_init(v);
 	
-	mpfr_add_d(actualTime, actualTime, timestep, GMP_RNDN);				// t	= t + dt
-	mpfr_sub(trueAnomaly, actualTime, epochPeriapsis, GMP_RNDN);		// phi	= t - t0	(phi is not the final result
+	mpfr_sub(trueAnomaly, gPhysics->getActualTime(), epochPeriapsis, GMP_RNDN);		// phi	= t - t0	(phi is not the final result
 	mpfr_mul(help, areaVelocity, areaVelocity, GMP_RNDN);				// help	= k²
 	mpfr_mul(help, help, meanMovement, GMP_RNDN);						// help = k² n
 	mpfr_mul(help, help, semimajorAxis, GMP_RNDN);						// help = k² n a
@@ -303,7 +301,7 @@ void	SOrbit::getPosition(SVector3mp& result)
 	mpfr_mul(u, sinU, cosO, GMP_RNDN);
 	mpfr_mul(u, u, cosI, GMP_RNDN);
 	mpfr_mul(result.y, cosU, sinO, GMP_RNDN);
-	mpfr_add(result.y, result.x, u, GMP_RNDN);
+	mpfr_add(result.y, result.y, u, GMP_RNDN);
 	
 	mpfr_mul(result.z, sinU, sinI, GMP_RNDN);
 	
@@ -347,7 +345,6 @@ SOrbit::SOrbit(SGravMass& GravMass, SMassPoint& OrbitMass, const mpfr_t time)	: 
 	mpfr_init(argumentPeriapsis);
 	mpfr_init(epochPeriapsis);
 	
-	mpfr_init(actualTime);
 	mpfr_init(eccentricityAnomaly);
 	mpfr_init(trueAnomaly);
 	mpfr_init(radius);
@@ -357,7 +354,7 @@ SOrbit::SOrbit(SGravMass& GravMass, SMassPoint& OrbitMass, const mpfr_t time)	: 
 	mpfr_init(period);
 	mpfr_init(massTerm);
 	
-	set(GravMass, OrbitMass, time);
+	set(GravMass, OrbitMass);
 }
 
 /*SOrbit::SOrbit(	const SEOrbit Type, 
@@ -389,7 +386,6 @@ SOrbit::SOrbit(	const SOrbit& Orbit)		: type(Orbit.type), areaVelocityNorm(Orbit
 	mpfr_init_set(argumentPeriapsis, Orbit.argumentPeriapsis, GMP_RNDN);
 	mpfr_init_set(epochPeriapsis, Orbit.epochPeriapsis, GMP_RNDN);
 	
-	mpfr_init_set(actualTime, Orbit.actualTime, GMP_RNDN);
 	mpfr_init_set(eccentricityAnomaly, Orbit.eccentricityAnomaly, GMP_RNDN);
 	mpfr_init_set(trueAnomaly, Orbit.trueAnomaly, GMP_RNDN);
 	mpfr_init_set(radius, Orbit.radius, GMP_RNDN);
@@ -410,7 +406,6 @@ SOrbit::~SOrbit()
 	mpfr_clear(argumentPeriapsis);
 	mpfr_clear(epochPeriapsis);
 	
-	mpfr_clear(actualTime);
 	mpfr_clear(eccentricityAnomaly);
 	mpfr_clear(trueAnomaly);
 	mpfr_clear(radius);
@@ -423,7 +418,7 @@ SOrbit::~SOrbit()
 
 
 
-void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const double Masses, const mpfr_t time)
+void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const double Masses)
 {
 	//Position.print();
 	//Velocity.print();
@@ -458,8 +453,6 @@ void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const d
 	mpfr_init(tanW2);
 	mpfr_t	M;
 	mpfr_init(M);
-	
-	mpfr_set(actualTime, time, GMP_RNDN);	
 	
 	//inclination
 	areaVelocityNorm	= cross(Position, Velocity);		// vk = vr x vv
@@ -600,7 +593,7 @@ void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const d
 		//mpfr_printf ("n: %.128RNf\n", period);
 		
 		mpfr_div(epochPeriapsis, M, meanMovement, GMP_RNDN);				// t	= M/n	(t is not complete result) 
-		mpfr_sub(epochPeriapsis, time, epochPeriapsis, GMP_RNDN);			// t	= time - M/n
+		mpfr_sub(epochPeriapsis, gPhysics->getActualTime(), epochPeriapsis, GMP_RNDN);			// t	= time - M/n
 		//mpfr_printf ("epochPeriapsis: %.128RNf\n", epochPeriapsis);
 		mpfr_const_pi(period, GMP_RNDN);									// T	= Pi (T is not complete result)
 		mpfr_mul_ui(period, period, 2, GMP_RNDN);							// T	= 2 Pi (T is not complete result)
@@ -653,7 +646,7 @@ void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const d
 		//mpfr_printf ("n: %.128RNf\n", n);
 		
 		mpfr_div(epochPeriapsis, M, meanMovement, GMP_RNDN);				// t	= M/n	(t is not complete result) 
-		mpfr_sub(epochPeriapsis, time, epochPeriapsis, GMP_RNDN);			// t	= time - M/n
+		mpfr_sub(epochPeriapsis, gPhysics->getActualTime(), epochPeriapsis, GMP_RNDN);			// t	= time - M/n
 		//mpfr_printf ("epochPeriapsis: %.128RNf\n", epochPeriapsis);
 		
 		mpfr_set_ui(period, 0, GMP_RNDN);									// T	= 0
@@ -694,7 +687,7 @@ void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const d
 			mpfr_div_ui(meanMovement, meanMovement, 3, GMP_RNDN);				// n	= (1/3)tan³(W/2)	(n is not complete result) 
 			mpfr_add(meanMovement, meanMovement, tanW2, GMP_RNDN);				// n	= (1/3)tan³(W/2) + tan(W/2)	(n is not complete result) 
 			mpfr_mul(meanMovement, meanMovement, M, GMP_RNDN);					// n	= sqrt(2q³/(G(M+m)))(1/3)tan³(W/2) + tan(W/2)	(n is not complete result) 
-			mpfr_sub(epochPeriapsis, time, M, GMP_RNDN);						// t	= time - sqrt(2q³/(G(M+m)))(1/3)tan³(W/2) + tan(W/2)
+			mpfr_sub(epochPeriapsis, gPhysics->getActualTime(), M, GMP_RNDN);						// t	= time - sqrt(2q³/(G(M+m)))(1/3)tan³(W/2) + tan(W/2)
 		}
 		else
 		{
@@ -703,9 +696,9 @@ void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const d
 			mpfr_mul_d(M, M, 2/(9*con), GMP_RNDN);								// M	= 2r³/(9G(M+m))	(M is not complete result) 
 			mpfr_sqrt(M, M, GMP_RNDN);											// M	= sqrt(2r³/(9G(M+m)))	(M is not complete result) 
 			if((Position*Velocity)<0)
-				mpfr_sub(epochPeriapsis, time, M, GMP_RNDN);						// t	= time - sqrt(2q³/(G(M+m)))(1/3)tan³(W/2) + tan(W/2)
+				mpfr_sub(epochPeriapsis, gPhysics->getActualTime(), M, GMP_RNDN);						// t	= time - sqrt(2q³/(G(M+m)))(1/3)tan³(W/2) + tan(W/2)
 			else
-				mpfr_add(epochPeriapsis, time, M, GMP_RNDN);						// t	= time - sqrt(2q³/(G(M+m)))(1/3)tan³(W/2) + tan(W/2)
+				mpfr_add(epochPeriapsis, gPhysics->getActualTime(), M, GMP_RNDN);						// t	= time + sqrt(2q³/(G(M+m)))(1/3)tan³(W/2) + tan(W/2)
 		}
 		//mpfr_printf ("epochPeriapsis: %.128RNf\n", epochPeriapsis);
 		
@@ -722,6 +715,12 @@ void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const d
 	mpfr_clear(sinE);
 	mpfr_clear(tanW2);
 	mpfr_clear(M);
+}
+
+
+void	SOrbit::move(const double timestep)
+{
+	
 }
 
 

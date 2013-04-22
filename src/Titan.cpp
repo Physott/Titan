@@ -10,9 +10,12 @@ int		main()
 	printf("%ld\n", CLOCKS_PER_SEC);
 	
 	SPhysics::init();
+	printf("Point 1\n");
 	
 	SChainedList<int>	list;
+	printf("Point 2\n");
 	list.add(1);
+	printf("Point 2\n");
 	
 	SVector3mp	v(1.1,2.2,3.3);
 	SVector3mp	v2(v);
@@ -26,6 +29,8 @@ int		main()
 		printf("ja\n");
 	else
 		printf("nein\n");
+		
+	
 	
 	mpfr_t	test;
 	mpfr_init_set_ui(test, 1, GMP_RNDN);

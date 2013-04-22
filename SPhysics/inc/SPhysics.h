@@ -32,6 +32,7 @@ public:
 	inline	void	calcTimeStep();
 	
 	static	void	init();
+	static	void	reset();
 };
 
 

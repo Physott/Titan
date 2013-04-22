@@ -26,7 +26,7 @@ private:
     mpfr_t	argumentPeriapsis;			// also Velocity y		
     mpfr_t	epochPeriapsis;				// also Velocity z		
     //actual values
-    mpfr_t	actualTime;
+    //mpfr_t	actualTime;
     mpfr_t	eccentricityAnomaly;
     mpfr_t	trueAnomaly;
     mpfr_t	radius;
@@ -40,6 +40,19 @@ private:
     
     SMassPoint*	orbitMass;
     SGravMass*	gravMass;
+    
+    void	calcMeanMovement();
+	void	calcMeanAnomaly(mpfr_t& result, const double timestep);
+    void	calcEllipticEccentricityAnomaly(const mpfr_t& MeanAnomaly);
+    void	calcHyperbolicEccentricityAnomaly(const mpfr_t& MeanAnomaly);
+    void	calcEllipticRadius();
+    void	calcHyperbolicRadius();
+    void	calcParabolicRadius();
+    void	calcEllipticTrueAnomaly();
+    void	calcHyperbolicTrueAnomaly();
+    void	calcParabolicTrueAnomaly(const double timestep);
+    void	getPosition(SVector3mp& result);
+
 	
 public:
 	//SOrbit();
@@ -68,7 +81,6 @@ public:
 	const	mpfr_t&		getLongitudeAscendingNode()	const	{return longitudeAscendingNode;}
 	const	mpfr_t&		getArgumentPeriapsis()		const	{return argumentPeriapsis;}
 	const	mpfr_t&		getEpochPeriapsis()			const	{return epochPeriapsis;}
-	const	mpfr_t&		getActualTime()				const	{return actualTime;}
 	const	mpfr_t&		getEccentricityAnomaly()	const	{return eccentricityAnomaly;}
 	const	mpfr_t&		getTrueAnomaly()			const	{return trueAnomaly;}
 	const	mpfr_t&		getRadius()					const	{return radius;}
@@ -95,22 +107,11 @@ public:
 	//SGravMass*	getGravMass(const SGravMass* GravMass)							{gravMass = GravMass;}
 	
 	
-	void	set(const SVector3mp& Position, const SVector3mp& Velocity, const double Masses, const mpfr_t time);
-	void	set(SGravMass& GravMass, SMassPoint& OrbitMass, const mpfr_t time)							{gravMass = &GravMass; orbitMass = &OrbitMass; set(OrbitMass.getPosition()-GravMass.getPosition(), OrbitMass.getVelocity()-GravMass.getVelocity(), OrbitMass.getMass()+GravMass.getMass(), time);}
+	void	set(const SVector3mp& Position, const SVector3mp& Velocity, const double Masses);
+	void	set(SGravMass& GravMass, SMassPoint& OrbitMass)							{gravMass = &GravMass; orbitMass = &OrbitMass; set(OrbitMass.getPosition()-GravMass.getPosition(), OrbitMass.getVelocity()-GravMass.getVelocity(), OrbitMass.getMass()+GravMass.getMass());}
 	
 	void	move(const double timestep);
-	void	move(const double timestep, const SVector3d& Acceleration);
-	void	calcMeanMovement();
-	void	calcMeanAnomaly(mpfr_t& result, const double timestep);
-    void	calcEllipticEccentricityAnomaly(const mpfr_t& MeanAnomaly);
-    void	calcHyperbolicEccentricityAnomaly(const mpfr_t& MeanAnomaly);
-    void	calcEllipticRadius();
-    void	calcHyperbolicRadius();
-    void	calcParabolicRadius();
-    void	calcEllipticTrueAnomaly();
-    void	calcHyperbolicTrueAnomaly();
-    void	calcParabolicTrueAnomaly(const double timestep);
-    void	getPosition(SVector3mp& result);
+	//void	move(const double timestep, const SVector3d& Acceleration);
 };
 
 

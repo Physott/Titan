@@ -2,6 +2,7 @@
 #define __SSystem_0_00_001
 
 
+#include <stdio.h>
 //#include <string.h>
 
 
