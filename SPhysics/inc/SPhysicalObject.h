@@ -8,10 +8,15 @@ protected:
 	SVector3mp	position;
 	SVector3mp	velocity;
 	
+	SVector3d	direction;
+	SVector3d	top;
+	SVector3d	rotationAxes;
+	double		angularVelocity;
+	
 public:
-	SPhysicalObject()														:	position(), velocity()					{}
-	SPhysicalObject(const SVector3mp& Position, const SVector3mp& Velocity)	:	position(Position), velocity(Velocity)	{}
-	~SPhysicalObject()																									{}
+	SPhysicalObject()														:	position(), velocity(), direction(), top(), rotationAxes(), angularVelocity(0)					{}
+	SPhysicalObject(const SVector3mp& Position, const SVector3mp& Velocity)	:	position(Position), velocity(Velocity), direction(), top(), rotationAxes(), angularVelocity(0)	{}
+	~SPhysicalObject()																																							{}
 	
 	//		SVector3mp&		getPosition()			{return position;}
 	const	SVector3mp&		getPosition()	const	{return position;}
@@ -23,6 +28,9 @@ public:
 	
 	void	move(const double timestep)									{position += velocity * timestep;}
 	void	move(const double timestep, const SVector3d& Acceleration)	{position += (velocity * timestep) + (Acceleration * timestep * timestep / 2); velocity += Acceleration * timestep;}
+	
+	void	rotate(const double timestep)								{position += velocity * timestep;}
+	
 };
 
 

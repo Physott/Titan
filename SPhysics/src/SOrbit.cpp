@@ -540,7 +540,7 @@ void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const d
 		mpfr_mul(sinE, semimajorAxis, massTerm, GMP_RNDN);					// sin(E)	= a G(M+m) (E is not complete result) 
 		mpfr_sqrt(sinE, sinE, GMP_RNDN);									// sin(E)	= sqrt(a G(M+m)) (E is not complete result) 
 		mpfr_mul(sinE, sinE, eccentricity, GMP_RNDN);						// sin(E)	= e sqrt(a G(M+m)) (E is not complete result)
-		dot(epochPeriapsis, Position, Velocity);							// M		= vr.vv (M is not complete result) (M is only buffer)
+		mul(epochPeriapsis, Position, Velocity);							// M		= vr.vv (M is not complete result) (M is only buffer)
 		mpfr_div(sinE, epochPeriapsis, sinE, GMP_RNDN);						// sin(E)	= vr.vv / (e sqrt(a G(M+m))) 
 		mpfr_asin(eccentricityAnomaly, sinE, GMP_RNDN);										// E		= asin(sin(E))
 		//printf("sinE: %lf\n",mpfr_get_d(sinE, GMP_RNDN));
@@ -618,7 +618,7 @@ void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const d
 		mpfr_mul(sinE, sinE, massTerm, GMP_RNDN);							// sinh(E)	= |a| G(M+m) (E is not complete result) 
 		mpfr_sqrt(sinE, sinE, GMP_RNDN);									// sinh(E)	= sqrt(|a| G(M+m)) (E is not complete result) 
 		mpfr_mul(sinE, sinE, eccentricity, GMP_RNDN);						// sinh(E)	= e sqrt(|a| G(M+m)) (E is not complete result)
-		dot(epochPeriapsis, Position, Velocity);							// M		= vr.vv (M is not complete result) (M is only buffer)
+		mul(epochPeriapsis, Position, Velocity);							// M		= vr.vv (M is not complete result) (M is only buffer)
 		mpfr_div(sinE, epochPeriapsis, sinE, GMP_RNDN);						// sinh(E)	= vr.vv / (e sqrt(|a| G(M+m))) 
 		//printf("sinE: %lf\n",mpfr_get_d(sinE, GMP_RNDN));
 		mpfr_asinh(eccentricityAnomaly, sinE, GMP_RNDN);					// E		= asin(sin(E))
@@ -672,7 +672,7 @@ void	SOrbit::set(const SVector3mp& Position, const SVector3mp& Velocity, const d
 		mpfr_mul(tanW2, semimajorAxis, massTerm, GMP_RNDN);					// tan(W/2)	= q G(M+m) (E is not complete result) 
 		mpfr_mul_d(tanW2, tanW2, 2, GMP_RNDN);								// tan(W/2)	= 2 q G(M+m) (E is not complete result) 
 		mpfr_sqrt(tanW2, tanW2, GMP_RNDN);									// tan(W/2)	= sqrt(2 q G(M+m)) (E is not complete result) 
-		dot(epochPeriapsis, Position, Velocity);							// M		= vr.vv (M is not complete result) (M is only buffer)
+		mul(epochPeriapsis, Position, Velocity);							// M		= vr.vv (M is not complete result) (M is only buffer)
 		mpfr_div(tanW2, epochPeriapsis, sinE, GMP_RNDN);					// tan(W/2)	= vr.vv / sqrt(2 q G(M+m))
 		//mpfr_printf ("tanW2: %.128RNf\n", E);
 		

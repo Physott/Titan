@@ -25,7 +25,36 @@ public:
 						const mpfr_t& _yx, const mpfr_t& _yy, const mpfr_t& _yz,
 						const mpfr_t& _zx, const mpfr_t& _zy, const mpfr_t& _zz);
 	inline	SMatrix3mp(const SMatrix3mp& m);
+	inline	SMatrix3mp(const SVector3mp& v1, const SVector3mp& v2);
 	inline	~SMatrix3mp();
+	
+	SMatrix3mp&	operator +=(const SMatrix3mp& v)	{mpfr_add(xx, xx, v.xx, GMP_RNDN); mpfr_add(xy, xy, v.xy, GMP_RNDN); mpfr_add(xz, xz, v.xz, GMP_RNDN);
+													 mpfr_add(yx, yx, v.yx, GMP_RNDN); mpfr_add(yy, yy, v.yy, GMP_RNDN); mpfr_add(yz, yz, v.yz, GMP_RNDN);
+													 mpfr_add(zx, zx, v.zx, GMP_RNDN); mpfr_add(zy, zy, v.zy, GMP_RNDN); mpfr_add(zz, zz, v.zz, GMP_RNDN); return *this;}
+	SMatrix3mp&	operator +=(const mpfr_t& v)		{mpfr_add(xx, xx, v, GMP_RNDN); mpfr_add(xy, xy, v, GMP_RNDN); mpfr_add(xz, xz, v, GMP_RNDN);
+													 mpfr_add(yx, yx, v, GMP_RNDN); mpfr_add(yy, yy, v, GMP_RNDN); mpfr_add(yz, yz, v, GMP_RNDN);
+													 mpfr_add(zx, zx, v, GMP_RNDN); mpfr_add(zy, zy, v, GMP_RNDN); mpfr_add(zz, zz, v, GMP_RNDN); return *this;}
+	SMatrix3mp&	operator +=(const double v)			{mpfr_add_d(xx, xx, v, GMP_RNDN); mpfr_add_d(xy, xy, v, GMP_RNDN); mpfr_add_d(xz, xz, v, GMP_RNDN);
+													 mpfr_add_d(yx, yx, v, GMP_RNDN); mpfr_add_d(yy, yy, v, GMP_RNDN); mpfr_add_d(yz, yz, v, GMP_RNDN);
+													 mpfr_add_d(zx, zx, v, GMP_RNDN); mpfr_add_d(zy, zy, v, GMP_RNDN); mpfr_add_d(zz, zz, v, GMP_RNDN); return *this;}
+	SMatrix3mp&	operator -=(const SMatrix3mp& v)	{mpfr_sub(xx, xx, v.xx, GMP_RNDN); mpfr_sub(xy, xy, v.xy, GMP_RNDN); mpfr_sub(xz, xz, v.xz, GMP_RNDN);
+													 mpfr_sub(yx, yx, v.yx, GMP_RNDN); mpfr_sub(yy, yy, v.yy, GMP_RNDN); mpfr_sub(yz, yz, v.yz, GMP_RNDN);
+													 mpfr_sub(zx, zx, v.zx, GMP_RNDN); mpfr_sub(zy, zy, v.zy, GMP_RNDN); mpfr_sub(zz, zz, v.zz, GMP_RNDN); return *this;}
+	SMatrix3mp&	operator -=(const mpfr_t& v)		{mpfr_sub(xx, xx, v, GMP_RNDN); mpfr_sub(xy, xy, v, GMP_RNDN); mpfr_sub(xz, xz, v, GMP_RNDN);
+													 mpfr_sub(yx, yx, v, GMP_RNDN); mpfr_sub(yy, yy, v, GMP_RNDN); mpfr_sub(yz, yz, v, GMP_RNDN);
+													 mpfr_sub(zx, zx, v, GMP_RNDN); mpfr_sub(zy, zy, v, GMP_RNDN); mpfr_sub(zz, zz, v, GMP_RNDN); return *this;}
+	SMatrix3mp&	operator -=(const double v)			{mpfr_sub_d(xx, xx, v, GMP_RNDN); mpfr_sub_d(xy, xy, v, GMP_RNDN); mpfr_sub_d(xz, xz, v, GMP_RNDN);
+													 mpfr_sub_d(yx, yx, v, GMP_RNDN); mpfr_sub_d(yy, yy, v, GMP_RNDN); mpfr_sub_d(yz, yz, v, GMP_RNDN);
+													 mpfr_sub_d(zx, zx, v, GMP_RNDN); mpfr_sub_d(zy, zy, v, GMP_RNDN); mpfr_sub_d(zz, zz, v, GMP_RNDN); return *this;}
+	//SMatrix3mp&	operator *=(const SMatrix3mp& v)	{mpfr_mul(xx, xx, v.xx, GMP_RNDN); mpfr_mul(xy, xy, v.xy, GMP_RNDN); mpfr_mul(xz, xz, v.xz, GMP_RNDN);
+	//												 mpfr_mul(yx, yx, v.yx, GMP_RNDN); mpfr_mul(yy, yy, v.yy, GMP_RNDN); mpfr_mul(yz, yz, v.yz, GMP_RNDN);
+	//												 mpfr_mul(zx, zx, v.zx, GMP_RNDN); mpfr_mul(zy, zy, v.zy, GMP_RNDN); mpfr_mul(zz, zz, v.zz, GMP_RNDN); return *this;}
+	SMatrix3mp&	operator *=(const mpfr_t& v)		{mpfr_mul(xx, xx, v, GMP_RNDN); mpfr_mul(xy, xy, v, GMP_RNDN); mpfr_mul(xz, xz, v, GMP_RNDN);
+													 mpfr_mul(yx, yx, v, GMP_RNDN); mpfr_mul(yy, yy, v, GMP_RNDN); mpfr_mul(yz, yz, v, GMP_RNDN);
+													 mpfr_mul(zx, zx, v, GMP_RNDN); mpfr_mul(zy, zy, v, GMP_RNDN); mpfr_mul(zz, zz, v, GMP_RNDN); return *this;}
+	SMatrix3mp&	operator *=(const double v)			{mpfr_mul_d(xx, xx, v, GMP_RNDN); mpfr_mul_d(xy, xy, v, GMP_RNDN); mpfr_mul_d(xz, xz, v, GMP_RNDN);
+													 mpfr_mul_d(yx, yx, v, GMP_RNDN); mpfr_mul_d(yy, yy, v, GMP_RNDN); mpfr_mul_d(yz, yz, v, GMP_RNDN);
+													 mpfr_mul_d(zx, zx, v, GMP_RNDN); mpfr_mul_d(zy, zy, v, GMP_RNDN); mpfr_mul_d(zz, zz, v, GMP_RNDN); return *this;}
 };
 
 
@@ -85,6 +114,28 @@ SMatrix3mp::SMatrix3mp(const SMatrix3mp& m)
 	mpfr_init_set(zx, m.xx, GMP_RNDN);
 	mpfr_init_set(zy, m.xy, GMP_RNDN);
 	mpfr_init_set(zz, m.xz, GMP_RNDN);
+}
+SMatrix3mp::SMatrix3mp(const SVector3mp& v1, const SVector3mp& v2)
+{
+	mpfr_init(xx, GMP_RNDN);
+	mpfr_init(xy, GMP_RNDN);
+	mpfr_init(xz, GMP_RNDN);
+	mpfr_init(yx, GMP_RNDN);
+	mpfr_init(yy, GMP_RNDN);
+	mpfr_init(yz, GMP_RNDN);
+	mpfr_init(zx, GMP_RNDN);
+	mpfr_init(zy, GMP_RNDN);
+	mpfr_init(zz, GMP_RNDN);
+	
+	mpfr_mul(xx, v1.x, v2.x, GMP_RNDN);
+	mpfr_mul(xy, v1.x, v2.y, GMP_RNDN);
+	mpfr_mul(xz, v1.x, v2.z, GMP_RNDN);
+	mpfr_mul(yx, v1.y, v2.x, GMP_RNDN);
+	mpfr_mul(yy, v1.y, v2.y, GMP_RNDN);
+	mpfr_mul(yz, v1.y, v2.z, GMP_RNDN);
+	mpfr_mul(zx, v1.z, v2.x, GMP_RNDN);
+	mpfr_mul(zy, v1.z, v2.y, GMP_RNDN);
+	mpfr_mul(zz, v1.z, v2.z, GMP_RNDN);
 }
 SMatrix3mp::~SMatrix3mp()
 {
